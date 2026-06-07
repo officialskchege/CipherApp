@@ -1,0 +1,55 @@
+:root{
+	--bg:#000a00;
+	--panel:#07130a;
+	--muted:#8fbf9a;
+	--neon:#39ff14;
+	--glass: rgba(255,255,255,0.02);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+	margin:0;
+	font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+	background: radial-gradient(800px 400px at 10% 10%, rgba(57,255,20,0.02), transparent), linear-gradient(180deg,#001000 0%, #000 100%);
+	color: #b8f7b0;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+}
+
+.matrix{
+	position:fixed; inset:0; z-index:0; pointer-events:none; background-image: linear-gradient(transparent 92%, rgba(57,255,20,0.02) 92%), repeating-linear-gradient(0deg, rgba(57,255,20,0.02) 0 2px, transparent 2px 6px);
+	mix-blend-mode:screen; opacity:0.9;
+}
+
+.topbar{position:relative; z-index:3; padding:12px 36px}
+.brand{font-size:22px; color:var(--neon); font-weight:700}
+
+.center{position:relative; z-index:3; max-width:920px; margin:28px auto; padding:24px 28px; text-align:left}
+h1{font-size:56px; margin:6px 0; color:var(--neon);}
+.lead{color:var(--muted); font-size:16px; margin-bottom:20px}
+
+.how{background:rgba(0,0,0,0.3); border:1px solid rgba(57,255,20,0.06); padding:14px; border-radius:10px; color:var(--muted); margin-bottom:18px}
+.how h2{color:var(--neon)}
+
+.actions-row{display:flex; gap:14px; margin:18px 0}
+.big-btn{flex:1; display:inline-block; padding:18px 22px; background:linear-gradient(180deg, rgba(57,255,20,0.12), rgba(0,0,0,0.2)); color:var(--neon); text-decoration:none; border-radius:10px; font-weight:700; border:1px solid rgba(57,255,20,0.12)}
+.big-btn:hover{box-shadow:0 10px 30px rgba(57,255,20,0.06)}
+
+.extra-row{margin-top:10px}
+.link-btn{color:var(--neon); text-decoration:none; margin-right:14px}
+
+.dev-card{display:flex; gap:12px; align-items:center; margin-top:22px; background:rgba(0,0,0,0.35); padding:12px; border-radius:10px; border:1px solid rgba(57,255,20,0.04)}
+.dev-card .dp{width:64px; height:64px; border-radius:8px; object-fit:cover; border:2px solid rgba(57,255,20,0.08)}
+.dev-name{font-weight:700; color:var(--neon)}
+.dev-bio{color:var(--muted); font-size:13px}
+
+.footer{margin-top:36px; color:var(--muted); text-align:center}
+
+@media (max-width:700px){
+	.actions-row{flex-direction:column}
+	.big-btn{width:100%}
+	.center{padding:18px}
+}
+
+
