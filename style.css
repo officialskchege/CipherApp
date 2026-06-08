@@ -10,6 +10,9 @@
 html,body{height:100%}
 body{
 	margin:0;
+	display:flex;
+	flex-direction:column;
+	min-height:100vh;
 	font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
 	background: radial-gradient(800px 400px at 10% 10%, rgba(57,255,20,0.02), transparent), linear-gradient(180deg,#001000 0%, #000 100%);
 	color: #b8f7b0;
@@ -25,7 +28,7 @@ body{
 .topbar{position:relative; z-index:3; padding:12px 36px}
 .brand{font-size:22px; color:var(--neon); font-weight:700}
 
-.center{position:relative; z-index:3; max-width:920px; margin:28px auto; padding:24px 28px; text-align:left}
+.center{position:relative; z-index:3; max-width:920px; margin:28px auto; padding:24px 28px; text-align:left; display:flex; flex-direction:column; flex:1;}
 h1{font-size:56px; margin:6px 0; color:var(--neon);}
 .lead{color:var(--muted); font-size:16px; margin-bottom:20px}
 
@@ -39,7 +42,7 @@ h1{font-size:56px; margin:6px 0; color:var(--neon);}
 .extra-row{margin-top:10px}
 .link-btn{color:var(--neon); text-decoration:none; margin-right:14px}
 
-.dev-card{display:flex; gap:12px; align-items:center; margin-top:22px; background:rgba(0,0,0,0.35); padding:12px; border-radius:10px; border:1px solid rgba(57,255,20,0.04)}
+.dev-card{display:flex; gap:12px; align-items:center; margin-top:auto; background:rgba(0,0,0,0.35); padding:12px; border-radius:10px; border:1px solid rgba(57,255,20,0.04)}
 .dev-card .dp{width:64px; height:64px; border-radius:8px; object-fit:cover; border:2px solid rgba(57,255,20,0.08)}
 .dev-name{font-weight:700; color:var(--neon)}
 .dev-bio{color:var(--muted); font-size:13px}

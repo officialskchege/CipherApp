@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CipherApp — Cipher Text</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .page-header { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+        .page-header h1 { margin:0; }
+        .page-header .back-link { color:var(--neon); text-decoration:none; font-size:14px; }
+        .panel-grid { display:grid; grid-template-columns:0.95fr 0.85fr 1.2fr; gap:24px; margin-top:28px; align-items:start; }
+        .panel-card { background:rgba(0,0,0,0.35); border:1px solid rgba(57,255,20,0.08); border-radius:18px; padding:26px; }
+        .field-group { display:flex; flex-direction:column; gap:8px; margin-top:18px; }
+        .field-group label { color:var(--muted); font-size:13px; }
+        .field-group input,
+        .field-group select,
+        .field-group textarea { width:100%; border-radius:14px; border:1px solid rgba(57,255,20,0.12); background:rgba(255,255,255,0.04); color:#ecffdd; padding:16px; font-family:inherit; font-size:14px; outline:none; }
+        .field-group select { appearance:none; -webkit-appearance:none; -moz-appearance:none; background:linear-gradient(180deg, rgba(255,255,255,0.07), rgba(0,0,0,0.3)); border:1px solid rgba(57,255,20,0.16); background-image:linear-gradient(transparent, transparent), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpolygon fill='%23b8f7b0' points='0,6 20,6 10,14'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 16px center; background-size:12px 12px; }
+        .field-group select:focus { border-color:rgba(57,255,20,0.28); box-shadow:0 0 0 3px rgba(57,255,20,0.08); }
+        .field-group option { background:#031206; color:#ecffdd; }
+        .field-group textarea { min-height:220px; resize:vertical; }
+        .controls { display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; justify-content:flex-start; }
+        .output-area { background:rgba(255,255,255,0.04); border:1px solid rgba(57,255,20,0.08); border-radius:14px; min-height:180px; padding:18px; color:#e6ffe6; font-size:14px; white-space:pre-wrap; word-break:break-word; }
+        .status-pill { display:inline-flex; align-items:center; gap:8px; padding:8px 14px; background:rgba(57,255,20,0.08); color:var(--neon); border-radius:999px; font-size:13px; margin-bottom:16px; }
+        .hint-list { list-style:decimal inside; color:var(--muted); margin-top:14px; line-height:1.8; }
+        .hint-card { display:grid; gap:14px; }
+        .chip-list { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+        .chip { display:inline-flex; align-items:center; gap:8px; background:rgba(57,255,20,0.08); color:var(--neon); padding:8px 14px; border-radius:999px; font-size:13px; }
+        .result-label { display:flex; align-items:center; gap:10px; color:var(--muted); font-size:13px; }
+        .icon-btn { display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; border-radius:14px; border:1px solid rgba(57,255,20,0.12); background:rgba(255,255,255,0.05); color:var(--neon); cursor:pointer; font-size:18px; padding:0 12px; }
+        .icon-btn:hover { background:rgba(57,255,20,0.08); border-color:rgba(57,255,20,0.24); }
+        .tips-card { grid-column:1 / -1; }
+        @media (max-width:940px) { .panel-grid { grid-template-columns:1fr; } .tips-card { grid-column:1; } .icon-btn { width:100%; } }
+        @media (max-width:700px) { .center { padding:18px; } }
+    </style>
+</head>
+<body>
+    <div class="matrix"></div>
+    <header class="topbar">
+        <div class="brand">CipherApp</div>
+    </header>
+
+    <main class="center">
+        <div class="page-header">
+            <div>
+                <h1>Cipher Text</h1>
+                <p class="lead">Encode, decode, and iterate on text with fast cipher utilities inspired by practical cryptography.</p>
+            </div>
+            <a class="link-btn back-link" href="index.html">← Back to Home</a>
+        </div>
+
+        <div class="panel-grid">
+            <section class="panel-card">
+                <div class="status-pill">Live tool • Select a cipher and transform text</div>
+
+                <div class="field-group">
+                    <label for="cipherType">Cipher method</label>
+                    <select id="cipherType">
+                        <option value="caesar">Caesar Shift</option>
+                        <option value="base64">Base64</option>
+                        <option value="rot13">ROT13</option>
+                        <option value="binary">Binary</option>
+                        <option value="letternumber">Letter number</option>
+                        <option value="ascii">ASCII</option>
+                        <option value="vigenere">Vigenère Cipher</option>
+                        <option value="railfence">Rail Fence Cipher</option>
+                        <option value="xor">XOR Cipher</option>
+                        <option value="aes">AES Encryption</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="panel-card">
+                <div class="field-group" id="keyGroup">
+                    <label for="cipherKey">Shift key</label>
+                    <input id="cipherKey" type="text" placeholder="3" value="3" />
+                    <div id="cipherKeyHelp" class="dev-bio">Use the key for the selected cipher.</div>
+                </div>
+
+                <div class="controls">
+                    <button class="big-btn" id="transformBtn">Transform</button>
+                    <button class="link-btn" id="swapBtn">Swap mode</button>
+                    <button class="link-btn" id="clearBtn">Clear</button>
+                </div>
+            </section>
+
+            <section class="panel-card">
+                <div class="field-group">
+                    <label for="cipherInput">Plain / encoded text</label>
+                    <textarea id="cipherInput" placeholder="Type your message here…"></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="result-label" for="cipherOutput">Result
+                        <button class="icon-btn" id="copyBtn" title="Copy result">⧉</button>
+                    </label>
+                    <div id="cipherOutput" class="output-area" aria-live="polite">Your encoded or decoded text appears here.</div>
+                </div>
+            </section>
+
+            <aside class="panel-card hint-card tips-card">
+                <div>
+                    <div class="dev-name">Why this page shines</div>
+                    <p class="dev-bio">A compact workspace for quick text ciphers, with an intelligent mode swap and live output preview that keeps the cryptography flow smooth.</p>
+                </div>
+
+                <div class="chip-list">
+                    <span class="chip">Caesar</span>
+                    <span class="chip">Base64</span>
+                    <span class="chip">ROT13</span>
+                    <span class="chip">Binary</span>
+                    <span class="chip">Letter number</span>
+                    <span class="chip">ASCII</span>
+                    <span class="chip">Vigenère</span>
+                    <span class="chip">Rail Fence</span>
+                </div>
+
+                <ul class="hint-list">
+                    <li>Use Caesar for simple shifts. The key updates automatically.</li>
+                    <li>Base64 is great for compact encoding and quick data transport.</li>
+                    <li>ROT13 is perfect for reversible obfuscation without a key.</li>
+                    <li>Binary and ASCII convert text into numeric forms and back.</li>
+                    <li>Letter number maps A→1 and reverses numbered sequences to letters.</li>
+                    <li>Vigenère, Rail Fence, XOR, and AES all use keys for more advanced transformations.</li>
+                </ul>
+
+                <div class="field-group">
+                    <label>Quick start</label>
+                    <p class="dev-bio">Type a phrase, choose a method, then press <strong>Transform</strong>. Use <strong>Swap mode</strong> to flip between encoding and decoding for the selected cipher.</p>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">CipherApp • Experiment responsibly</footer>
+
+    <script>
+        const input = document.getElementById('cipherInput');
+        const output = document.getElementById('cipherOutput');
+        const type = document.getElementById('cipherType');
+        const key = document.getElementById('cipherKey');
+        const keyHelp = document.getElementById('cipherKeyHelp');
+        const keyGroup = document.getElementById('keyGroup');
+        const transformBtn = document.getElementById('transformBtn');
+        const swapBtn = document.getElementById('swapBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        let encodeMode = true;
+
+        function caesar(str, shift) {
+            return str.replace(/[a-z]/gi, (char) => {
+                const base = char <= 'Z' ? 65 : 97;
+                const code = ((char.charCodeAt(0) - base + shift + 26) % 26) + base;
+                return String.fromCharCode(code);
+            });
+        }
+
+        function letterNumber(str, encode) {
+            if (encode) {
+                return [...str].map((char) => {
+                    if (/\p{L}/u.test(char)) {
+                        const code = char.toUpperCase().charCodeAt(0) - 64;
+                        return code;
+                    }
+                    return char === ' ' ? '/' : char;
+                }).join(' ');
+            }
+
+            return str.split(/\s+/).map((token) => {
+                if (/^\d+$/.test(token)) {
+                    const value = parseInt(token, 10);
+                    return value >= 1 && value <= 26 ? String.fromCharCode(value + 64) : '';
+                }
+                return token === '/' ? ' ' : token;
+            }).join('');
+        }
+
+        function asciiEncode(str) {
+            return [...str].map((char) => char.charCodeAt(0)).join(' ');
+        }
+
+        function asciiDecode(str) {
+            return str.split(/\s+/).map((code) => {
+                const parsed = parseInt(code, 10);
+                return isNaN(parsed) ? '' : String.fromCharCode(parsed);
+            }).join('');
+        }
+
+        function vigenere(str, passphrase, encode) {
+            const normalizedKey = passphrase.replace(/[^A-Za-z]/g, '').toUpperCase();
+            if (!normalizedKey) return 'Enter a valid passphrase.';
+
+            let keyIndex = 0;
+            return [...str].map((char) => {
+                const isUpper = char >= 'A' && char <= 'Z';
+                const isLower = char >= 'a' && char <= 'z';
+                if (!isUpper && !isLower) return char;
+
+                const base = isUpper ? 65 : 97;
+                const shift = normalizedKey[keyIndex % normalizedKey.length].charCodeAt(0) - 65;
+                const offset = (char.charCodeAt(0) - base + (encode ? shift : -shift) + 26) % 26;
+                keyIndex += 1;
+                return String.fromCharCode(base + offset);
+            }).join('');
+        }
+
+        function railFenceEncode(str, rails) {
+            rails = Math.max(2, rails);
+            const fence = Array.from({ length: rails }, () => []);
+            let row = 0;
+            let direction = 1;
+
+            [...str].forEach((char) => {
+                fence[row].push(char);
+                if (row === 0) direction = 1;
+                if (row === rails - 1) direction = -1;
+                row += direction;
+            });
+
+            return fence.map((line) => line.join('')).join('');
+        }
+
+        function railFenceDecode(str, rails) {
+            rails = Math.max(2, rails);
+            const pattern = Array.from({ length: str.length }, () => 0);
+            let row = 0;
+            let direction = 1;
+
+            for (let i = 0; i < str.length; i += 1) {
+                pattern[i] = row;
+                if (row === 0) direction = 1;
+                if (row === rails - 1) direction = -1;
+                row += direction;
+            }
+
+            const fence = Array.from({ length: rails }, () => []);
+            let index = 0;
+            for (let r = 0; r < rails; r += 1) {
+                for (let i = 0; i < str.length; i += 1) {
+                    if (pattern[i] === r) fence[r].push(str[index++] || '');
+                }
+            }
+
+            return pattern.map((rowNumber) => fence[rowNumber].shift() || '').join('');
+        }
+
+        function xorCipher(str, keyString) {
+            if (!keyString) return 'Enter a valid XOR key.';
+            const keyChars = [...keyString].map((c) => c.charCodeAt(0));
+            if (keyChars.length === 0) return 'Enter a valid XOR key.';
+
+            if (encodeMode) {
+                return [...str].map((char, index) => {
+                    const value = char.charCodeAt(0) ^ keyChars[index % keyChars.length];
+                    return value.toString(16).padStart(2, '0');
+                }).join(' ');
+            }
+
+            return str.split(/\s+/).map((hex, index) => {
+                const parsed = parseInt(hex, 16);
+                if (isNaN(parsed)) return '';
+                const value = parsed ^ keyChars[index % keyChars.length];
+                return String.fromCharCode(value);
+            }).join('');
+        }
+
+        async function deriveAesKey(password) {
+            const encoder = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(password),
+                { name: 'PBKDF2' },
+                false,
+                ['deriveKey']
+            );
+
+            return crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: encoder.encode('CipherApp-Salt'),
+                    iterations: 200000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        async function aesEncrypt(str, passphrase) {
+            if (!passphrase) return 'Enter a passphrase for AES.';
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encoder = new TextEncoder();
+            const keyMaterial = await deriveAesKey(passphrase);
+            const cipherText = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv },
+                keyMaterial,
+                encoder.encode(str)
+            );
+            const payload = new Uint8Array(iv.byteLength + cipherText.byteLength);
+            payload.set(iv, 0);
+            payload.set(new Uint8Array(cipherText), iv.byteLength);
+            return btoa(String.fromCharCode(...payload));
+        }
+
+        async function aesDecrypt(str, passphrase) {
+            if (!passphrase) return 'Enter a passphrase for AES.';
+            try {
+                const decoded = atob(str);
+                const bytes = Uint8Array.from(decoded, (c) => c.charCodeAt(0));
+                const iv = bytes.slice(0, 12);
+                const data = bytes.slice(12);
+                const keyMaterial = await deriveAesKey(passphrase);
+                const plainBuffer = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv },
+                    keyMaterial,
+                    data
+                );
+                return new TextDecoder().decode(plainBuffer);
+            } catch (err) {
+                return 'AES decryption failed. Check your input and passphrase.';
+            }
+        }
+
+        async function transformText() {
+            const value = input.value.trim();
+            if (!value) {
+                output.textContent = 'Enter a message to transform.';
+                return;
+            }
+
+            switch (type.value) {
+                case 'caesar': {
+                    const shift = parseInt(key.value, 10) || 0;
+                    output.textContent = encodeMode ? caesar(value, shift) : caesar(value, -shift);
+                    break;
+                }
+                case 'base64': {
+                    try {
+                        output.textContent = encodeMode ? btoa(value) : atob(value);
+                    } catch (error) {
+                        output.textContent = 'Invalid Base64 input for decoding.';
+                    }
+                    break;
+                }
+                case 'rot13': {
+                    output.textContent = caesar(value, 13);
+                    break;
+                }
+                case 'binary': {
+                    output.textContent = encodeMode ? toBinary(value) : fromBinary(value);
+                    break;
+                }
+                case 'letternumber': {
+                    output.textContent = letterNumber(value, encodeMode);
+                    break;
+                }
+                case 'ascii': {
+                    output.textContent = encodeMode ? asciiEncode(value) : asciiDecode(value);
+                    break;
+                }
+                case 'vigenere': {
+                    output.textContent = vigenere(value, key.value, encodeMode);
+                    break;
+                }
+                case 'railfence': {
+                    const rails = parseInt(key.value, 10) || 2;
+                    output.textContent = encodeMode ? railFenceEncode(value, rails) : railFenceDecode(value, rails);
+                    break;
+                }
+                case 'xor': {
+                    output.textContent = xorCipher(value, key.value);
+                    break;
+                }
+                case 'aes': {
+                    output.textContent = encodeMode ? await aesEncrypt(value, key.value) : await aesDecrypt(value, key.value);
+                    break;
+                }
+                default: {
+                    output.textContent = 'Unsupported cipher selection.';
+                }
+            }
+        }
+
+        function getKeyConfig() {
+            const config = {
+                caesar: { label: 'Shift key', placeholder: '3', type: 'number', helper: 'Enter a shift amount between 1 and 25.' },
+                vigenere: { label: 'Passphrase', placeholder: 'secret', type: 'text', helper: 'Use letters only for the Vigenère key.' },
+                railfence: { label: 'Depth', placeholder: '3', type: 'number', helper: 'Use two or more rails for the fence.' },
+                xor: { label: 'XOR key', placeholder: 'key', type: 'text', helper: 'Any short text can be used as the XOR key.' },
+                aes: { label: 'Passphrase', placeholder: 'strong password', type: 'text', helper: 'AES uses a passphrase to derive the encryption key.' }
+            };
+            return config[type.value] || { label: 'Key', placeholder: '', type: 'text', helper: 'Use the key for the selected cipher.' };
+        }
+
+        function updateKeyVisibility() {
+            const currentConfig = getKeyConfig();
+            const showKey = ['caesar', 'vigenere', 'railfence', 'xor', 'aes'].includes(type.value);
+            keyGroup.style.display = showKey ? 'flex' : 'none';
+            key.previousElementSibling.textContent = currentConfig.label;
+            key.placeholder = currentConfig.placeholder;
+            key.type = currentConfig.type;
+            keyHelp.textContent = currentConfig.helper;
+            if (key.value === '' && currentConfig.placeholder) {
+                key.value = currentConfig.type === 'number' ? currentConfig.placeholder : '';
+            }
+        }
+
+        type.addEventListener('change', async () => {
+            updateKeyVisibility();
+            await transformText();
+        });
+
+        transformBtn.addEventListener('click', async () => {
+            await transformText();
+        });
+
+        swapBtn.addEventListener('click', async () => {
+            encodeMode = !encodeMode;
+            transformBtn.textContent = encodeMode ? 'Transform' : 'Reverse';
+            swapBtn.textContent = encodeMode ? 'Swap mode' : 'Swap back';
+            await transformText();
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            const text = output.textContent;
+            if (!text) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => { copyBtn.textContent = 'Copy result'; }, 1200);
+            } catch (err) {
+                output.textContent = 'Unable to copy to clipboard.';
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            output.textContent = 'Your encoded or decoded text appears here.';
+        });
+
+        updateKeyVisibility();
+    </script>
+</body>
+</html>
