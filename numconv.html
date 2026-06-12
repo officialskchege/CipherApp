@@ -195,6 +195,9 @@
           6px 6px,
           6px 6px;
         background-repeat: no-repeat;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .field-group option {
@@ -741,7 +744,15 @@
       </div>
     </main>
 
+    <div class="footer-spacer" aria-hidden="true"></div>
     <footer class="footer">CipherApp • Experiment responsibly</footer>
+
+    <style>
+      .footer-spacer {
+        height: 320px;
+        width: 100%;
+      }
+    </style>
 
     <script>
       const input = document.getElementById("numberInput");
@@ -848,6 +859,13 @@
         return formatBigInt(value, Number(mode));
       }
 
+      function formatWithSubscript(valueStr, mode) {
+        // Show the converted value with a subscript for the output base.
+        const label = mode === "base64" ? "base 64" : String(mode);
+
+        return `${valueStr}<sub>${label}</sub>`;
+      }
+
       function convertNumber() {
         const sourceValue = input.value.trim();
         if (!sourceValue) {
@@ -860,7 +878,8 @@
 
         try {
           const parsed = parseValue(sourceValue, from);
-          output.textContent = formatValue(parsed, to);
+          const valueStr = formatValue(parsed, to);
+          output.innerHTML = formatWithSubscript(valueStr, to);
         } catch (error) {
           output.textContent = error.message;
         }
