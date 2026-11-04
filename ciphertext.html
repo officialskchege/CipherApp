@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#071219" />
     <title>CipherApp — Cipher Text</title>
+    <script src="theme.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -26,11 +27,6 @@
             transparent 24%
           ),
           linear-gradient(180deg, #031006 0%, #000500 100%);
-      }
-
-      .topbar,
-      .footer {
-        display: none;
       }
 
       .center {
@@ -533,7 +529,7 @@
     </style>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
+  <body class="tool-page">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
     <div class="tips-overlay">
@@ -553,6 +549,42 @@
         </svg>
         <span>Home</span>
       </a>
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Switch to light theme"
+        aria-pressed="false"
+      >
+        <svg
+          class="theme-icon theme-icon-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+        </svg>
+        <svg
+          class="theme-icon theme-icon-moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
+        </svg>
+        <span class="theme-label">Dark theme</span>
+      </button>
       <button
         class="tips-toggle"
         id="tipsToggle"
@@ -591,7 +623,12 @@
           <li>Rail Fence uses zig-zag rows; the depth controls the rails.</li>
           <li>XOR works on bytes; keep the key short but not empty.</li>
           <li>
-            AES requires a passphrase and is best for encrypted data only.
+            AES uses a random salt and IV. Keep the full CipherApp AES v1 output
+            with your passphrase.
+          </li>
+          <li>
+            Classical ciphers and encodings are for learning, not secure
+            communication.
           </li>
         </ul>
       </div>
@@ -617,7 +654,7 @@
     </header>
 
     <main class="center" id="main-content" tabindex="-1">
-      <div class="cipher-shell">
+      <div class="cipher-shell cipher-layout">
         <section class="workspace-intro" aria-label="Cipher text overview">
           <div class="workspace-kicker">CipherApp text lab</div>
           <h1>Cipher Text</h1>
@@ -625,6 +662,11 @@
             Convert messages between classic encodings and ciphers. Choose your
             source and target mode, add a key when the cipher needs one, then
             transform the text and copy the result.
+          </p>
+          <p class="security-note">
+            AES uses a random salt and IV; save the full AES v1 result and
+            keep your passphrase. Other ciphers are for learning, not
+            protecting sensitive messages.
           </p>
         </section>
 
@@ -642,11 +684,15 @@
           <div class="mode-row">
             <div class="field-group">
               <label for="inputCipherType">From</label>
-              <select id="inputCipherType" name="inputCipherType" autocomplete="off">
+              <select
+                id="inputCipherType"
+                name="inputCipherType"
+                autocomplete="off"
+              >
                 <option value="plain">Plain Text</option>
                 <option value="alphabetical">Alphabetical</option>
                 <option value="caesar">Caesar Shift</option>
-                <option value="base64">Base64</option>
+                <option value="base64">Base64 (UTF-8 text)</option>
                 <option value="rot13">ROT13</option>
                 <option value="binary">Binary</option>
                 <option value="letternumber">Letter number</option>
@@ -660,11 +706,15 @@
 
             <div class="field-group">
               <label for="cipherType">To</label>
-              <select id="cipherType" name="cipherType" autocomplete="off">
+              <select
+                id="cipherType"
+                name="cipherType"
+                autocomplete="off"
+              >
                 <option value="plain">Plain Text</option>
                 <option value="alphabetical" selected>Alphabetical</option>
                 <option value="caesar">Caesar Shift</option>
-                <option value="base64">Base64</option>
+                <option value="base64">Base64 (UTF-8 text)</option>
                 <option value="rot13">ROT13</option>
                 <option value="binary">Binary</option>
                 <option value="letternumber">Letter number</option>
@@ -749,6 +799,73 @@
             </div>
           </div>
         </section>
+
+        <section
+          class="wire-panel batch-panel"
+          aria-label="Batch cipher processing"
+        >
+          <div class="panel-heading">
+            <div>
+              <h2>Batch Transform</h2>
+              <p>
+                Transform up to 100 messages with the selected modes and key.
+                Enter one message per line; blank lines are ignored. Results
+                stay in this browser session.
+              </p>
+            </div>
+          </div>
+
+          <section class="batch-help" aria-labelledby="cipherBatchHelpHeading">
+            <h3 id="cipherBatchHelpHeading">How batch processing works</h3>
+            <ol>
+              <li>Put one message on each line. Empty lines are skipped.</li>
+              <li>
+                Choose the From and To modes and enter any required key once;
+                those settings are applied independently to every message.
+              </li>
+              <li>
+                Run the batch to see each result or its own error. Up to 100
+                non-empty messages can be processed at a time.
+              </li>
+              <li>
+                Copy or download the JSON results when needed. For AES, each
+                message is encrypted separately with a fresh salt and IV.
+              </li>
+            </ol>
+            <p>
+              Inputs and results stay in page memory unless you copy or
+              download them. Treat exported files as sensitive if they contain
+              private messages.
+            </p>
+          </section>
+
+          <div class="field-group">
+            <label for="cipherBatchInput">Messages</label>
+            <textarea
+              id="cipherBatchInput"
+              name="cipherBatchInput"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Enter one message per line…"
+            ></textarea>
+          </div>
+
+          <div class="controls">
+            <button class="big-btn" id="cipherBatchRunBtn">Run Batch</button>
+            <button class="link-btn" id="cipherBatchClearBtn">Clear Batch</button>
+            <button class="link-btn" id="cipherBatchCopyBtn" disabled>Copy JSON</button>
+            <button class="link-btn" id="cipherBatchDownloadBtn" disabled>
+              Download JSON
+            </button>
+          </div>
+
+          <div id="cipherBatchStatus" class="dev-bio" aria-live="polite"></div>
+          <ol
+            id="cipherBatchResults"
+            class="batch-results"
+            aria-label="Batch results"
+          ></ol>
+        </section>
       </div>
     </main>
 
@@ -766,6 +883,14 @@
       const swapBtn = document.getElementById("swapBtn");
       const copyBtn = document.getElementById("copyBtn");
       const clearBtn = document.getElementById("clearBtn");
+      const batchInput = document.getElementById("cipherBatchInput");
+      const batchRunBtn = document.getElementById("cipherBatchRunBtn");
+      const batchClearBtn = document.getElementById("cipherBatchClearBtn");
+      const batchCopyBtn = document.getElementById("cipherBatchCopyBtn");
+      const batchDownloadBtn = document.getElementById("cipherBatchDownloadBtn");
+      const batchStatus = document.getElementById("cipherBatchStatus");
+      const batchResultsList = document.getElementById("cipherBatchResults");
+      let batchRecords = [];
       const keyedTypes = ["caesar", "vigenere", "railfence", "xor", "aes"];
 
       function alphabetical(str) {
@@ -845,7 +970,7 @@
         const normalizedKey = passphrase
           .replace(/[^A-Za-z]/g, "")
           .toUpperCase();
-        if (!normalizedKey) return "Enter a valid passphrase.";
+        if (!normalizedKey) throw new Error("Enter a valid passphrase.");
 
         let keyIndex = 0;
         return [...str]
@@ -908,9 +1033,9 @@
       }
 
       function xorCipher(str, keyString, encode) {
-        if (!keyString) return "Enter a valid XOR key.";
+        if (!keyString) throw new Error("Enter a valid XOR key.");
         const keyChars = [...keyString].map((c) => c.charCodeAt(0));
-        if (keyChars.length === 0) return "Enter a valid XOR key.";
+        if (keyChars.length === 0) throw new Error("Enter a valid XOR key.");
 
         if (encode) {
           return [...str]
@@ -933,7 +1058,39 @@
           .join("");
       }
 
-      async function deriveAesKey(password) {
+      const AES_V1_PREFIX = "CipherApp-AES-GCM:v1:";
+      const AES_V1_CONTEXT = new TextEncoder().encode("CipherApp-AES-GCM:v1");
+      const LEGACY_AES_SALT = new TextEncoder().encode("CipherApp-Salt");
+
+      function encodeBase64Bytes(bytes) {
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+          binary += String.fromCharCode(
+            ...bytes.subarray(offset, offset + chunkSize),
+          );
+        }
+        return btoa(binary);
+      }
+
+      function decodeBase64Bytes(value) {
+        const normalized = value.replace(/\s+/g, "");
+        if (
+          !normalized ||
+          normalized.length % 4 === 1 ||
+          !/^[A-Za-z0-9+/]*={0,2}$/.test(normalized)
+        ) {
+          throw new Error("Invalid AES ciphertext format.");
+        }
+        const padded = normalized.padEnd(
+          Math.ceil(normalized.length / 4) * 4,
+          "=",
+        );
+        const decoded = atob(padded);
+        return Uint8Array.from(decoded, (char) => char.charCodeAt(0));
+      }
+
+      async function deriveAesKey(password, salt) {
         const encoder = new TextEncoder();
         const keyMaterial = await crypto.subtle.importKey(
           "raw",
@@ -946,7 +1103,7 @@
         return crypto.subtle.deriveKey(
           {
             name: "PBKDF2",
-            salt: encoder.encode("CipherApp-Salt"),
+            salt,
             iterations: 200000,
             hash: "SHA-256",
           },
@@ -958,37 +1115,66 @@
       }
 
       async function aesEncrypt(str, passphrase) {
-        if (!passphrase) return "Enter a passphrase for AES.";
+        if (!passphrase) throw new Error("Enter a passphrase for AES.");
+        if (!globalThis.crypto?.subtle) {
+          throw new Error("AES encryption requires a secure browser context.");
+        }
+        const salt = crypto.getRandomValues(new Uint8Array(16));
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const encoder = new TextEncoder();
-        const keyMaterial = await deriveAesKey(passphrase);
+        const keyMaterial = await deriveAesKey(passphrase, salt);
         const cipherText = await crypto.subtle.encrypt(
-          { name: "AES-GCM", iv },
+          { name: "AES-GCM", iv, additionalData: AES_V1_CONTEXT },
           keyMaterial,
           encoder.encode(str),
         );
-        const payload = new Uint8Array(iv.byteLength + cipherText.byteLength);
-        payload.set(iv, 0);
-        payload.set(new Uint8Array(cipherText), iv.byteLength);
-        return btoa(String.fromCharCode(...payload));
+        const payload = new Uint8Array(
+          salt.byteLength + iv.byteLength + cipherText.byteLength,
+        );
+        payload.set(salt, 0);
+        payload.set(iv, salt.byteLength);
+        payload.set(
+          new Uint8Array(cipherText),
+          salt.byteLength + iv.byteLength,
+        );
+        return AES_V1_PREFIX + encodeBase64Bytes(payload);
       }
 
       async function aesDecrypt(str, passphrase) {
-        if (!passphrase) return "Enter a passphrase for AES.";
+        if (!passphrase) throw new Error("Enter a passphrase for AES.");
         try {
-          const decoded = atob(str);
-          const bytes = Uint8Array.from(decoded, (c) => c.charCodeAt(0));
-          const iv = bytes.slice(0, 12);
-          const data = bytes.slice(12);
-          const keyMaterial = await deriveAesKey(passphrase);
+          if (!globalThis.crypto?.subtle) {
+            throw new Error("AES decryption requires a secure browser context.");
+          }
+          const isV1 = str.startsWith(AES_V1_PREFIX);
+          const payload = isV1 ? str.slice(AES_V1_PREFIX.length) : str;
+          const bytes = decodeBase64Bytes(payload);
+          const salt = isV1 ? bytes.slice(0, 16) : LEGACY_AES_SALT;
+          const ivOffset = isV1 ? 16 : 0;
+          const iv = bytes.slice(ivOffset, ivOffset + 12);
+          const data = bytes.slice(ivOffset + 12);
+          if (
+            iv.length !== 12 ||
+            data.length < 16 ||
+            (isV1 && salt.length !== 16)
+          ) {
+            throw new Error("Invalid AES ciphertext format.");
+          }
+          const keyMaterial = await deriveAesKey(passphrase, salt);
           const plainBuffer = await crypto.subtle.decrypt(
-            { name: "AES-GCM", iv },
+            {
+              name: "AES-GCM",
+              iv,
+              ...(isV1 ? { additionalData: AES_V1_CONTEXT } : {}),
+            },
             keyMaterial,
             data,
           );
           return new TextDecoder().decode(plainBuffer);
-        } catch (err) {
-          return "AES decryption failed. Check your input and passphrase.";
+        } catch {
+          throw new Error(
+            "AES decryption failed. Check the full ciphertext and passphrase.",
+          );
         }
       }
 
@@ -1010,9 +1196,11 @@
             return caesar(value, -getShift());
           case "base64":
             try {
-              return atob(value);
-            } catch (error) {
-              return "Invalid Base64 input for decoding.";
+              return new TextDecoder("utf-8", { fatal: true }).decode(
+                decodeBase64Bytes(value),
+              );
+            } catch {
+              throw new Error("Invalid Base64 input for UTF-8 text decoding.");
             }
           case "rot13":
             return caesar(value, 13);
@@ -1045,9 +1233,9 @@
             return caesar(value, getShift());
           case "base64":
             try {
-              return btoa(value);
-            } catch (error) {
-              return "Unable to encode this value as Base64.";
+              return encodeBase64Bytes(new TextEncoder().encode(value));
+            } catch {
+              throw new Error("Unable to encode this value as Base64.");
             }
           case "rot13":
             return caesar(value, 13);
@@ -1066,20 +1254,165 @@
           case "aes":
             return aesEncrypt(value, key.value);
           default:
-            return "Unsupported cipher selection.";
+            throw new Error("Unsupported cipher selection.");
+        }
+      }
+
+      function clearBatchResults() {
+        batchRecords = [];
+        batchResultsList.replaceChildren();
+        batchCopyBtn.disabled = true;
+        batchDownloadBtn.disabled = true;
+      }
+
+      function renderBatchResults() {
+        const fragment = document.createDocumentFragment();
+        for (const record of batchRecords) {
+          const item = document.createElement("li");
+          const heading = document.createElement("div");
+          const lineLabel = document.createElement("strong");
+          const statusLabel = document.createElement("span");
+          const inputLabel = document.createElement("strong");
+          const inputText = document.createElement("pre");
+          const resultLabel = document.createElement("strong");
+          const resultText = document.createElement("pre");
+
+          item.className = "batch-result";
+          item.dataset.status = record.error ? "error" : "success";
+          heading.className = "batch-result-heading";
+          lineLabel.textContent = `Line ${record.line}`;
+          statusLabel.textContent = record.error ? "Error" : "Success";
+          inputLabel.textContent = "Input";
+          inputText.textContent = record.input;
+          resultLabel.textContent = record.error ? "Error details" : "Result";
+          resultText.textContent = record.error || record.result;
+          heading.append(lineLabel, statusLabel);
+          item.append(heading, inputLabel, inputText, resultLabel, resultText);
+          fragment.append(item);
+        }
+        batchResultsList.replaceChildren(fragment);
+      }
+
+      function getBatchJson() {
+        return JSON.stringify(batchRecords, null, 2);
+      }
+
+      async function runCipherBatch() {
+        const rows = batchInput.value
+          .split(/\r?\n/)
+          .map((text, index) => ({ line: index + 1, input: text }))
+          .filter((row) => row.input.trim());
+
+        clearBatchResults();
+        if (rows.length === 0) {
+          batchStatus.textContent = "Enter at least one non-empty message.";
+          return;
+        }
+        if (rows.length > 100) {
+          batchStatus.textContent =
+            "Batch limit is 100 non-empty messages. Split the input into smaller batches.";
+          return;
+        }
+
+        batchStatus.textContent = `Processing ${rows.length} messages…`;
+        const lockedControls = [inputType, type, key, transformBtn, swapBtn];
+        const originalDisabledStates = lockedControls.map(
+          (control) => control.disabled,
+        );
+        lockedControls.forEach((control) => {
+          control.disabled = true;
+        });
+        batchRunBtn.disabled = true;
+        batchClearBtn.disabled = true;
+
+        try {
+          for (let index = 0; index < rows.length; index += 1) {
+            const row = rows[index];
+            try {
+              const sourceValue =
+                inputType.value === "plain" ? row.input : row.input.trim();
+              const plainText = await decodeByType(
+                sourceValue,
+                inputType.value,
+              );
+              const result = await encodeByType(plainText, type.value);
+              batchRecords.push({ line: row.line, input: row.input, result });
+            } catch (error) {
+              batchRecords.push({
+                line: row.line,
+                input: row.input,
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to transform this message.",
+              });
+            }
+
+            if ((index + 1) % 5 === 0 && index + 1 < rows.length) {
+              batchStatus.textContent = `Processed ${index + 1} of ${rows.length} messages…`;
+              renderBatchResults();
+              await new Promise((resolve) => setTimeout(resolve, 0));
+            }
+          }
+          renderBatchResults();
+          const failures = batchRecords.filter((record) => record.error).length;
+          batchStatus.textContent =
+            `Processed ${rows.length} messages: ${rows.length - failures} succeeded, ${failures} failed.`;
+          batchCopyBtn.disabled = false;
+          batchDownloadBtn.disabled = false;
+        } finally {
+          lockedControls.forEach((control, index) => {
+            control.disabled = originalDisabledStates[index];
+          });
+          batchRunBtn.disabled = false;
+          batchClearBtn.disabled = false;
         }
       }
 
       async function transformText() {
-        const value = input.value.trim();
-        if (!value) {
+        const value = input.value;
+        if (!value.trim()) {
           output.textContent = "Enter a message to transform.";
           return;
         }
 
-        const plainText = await decodeByType(value, inputType.value);
-        output.textContent = await encodeByType(plainText, type.value);
+        try {
+          const sourceValue = inputType.value === "plain" ? value : value.trim();
+          const plainText = await decodeByType(sourceValue, inputType.value);
+          output.textContent = await encodeByType(plainText, type.value);
+        } catch (error) {
+          output.textContent =
+            error instanceof Error ? error.message : "Unable to transform this message.";
+        }
       }
+
+      batchRunBtn.addEventListener("click", runCipherBatch);
+      batchClearBtn.addEventListener("click", () => {
+        batchInput.value = "";
+        batchStatus.textContent = "";
+        clearBatchResults();
+        batchInput.focus();
+      });
+      batchCopyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(getBatchJson());
+          batchStatus.textContent = "Batch JSON copied.";
+        } catch {
+          batchStatus.textContent =
+            "Clipboard access failed. Select and copy the results manually.";
+        }
+      });
+      batchDownloadBtn.addEventListener("click", () => {
+        const file = new Blob([getBatchJson()], {
+          type: "application/json;charset=utf-8",
+        });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "cipherapp-cipher-batch.json";
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
 
       function getKeyConfig() {
         const config = {
@@ -1153,15 +1486,21 @@
         }
       }
 
-      type.addEventListener("change", async () => {
-        updateKeyVisibility();
-        await transformText();
-      });
+      let aesModeSelected =
+        inputType.value === "aes" || type.value === "aes";
 
-      inputType.addEventListener("change", async () => {
+      async function handleModeChange() {
+        const nowUsesAes = inputType.value === "aes" || type.value === "aes";
+        if (nowUsesAes && !aesModeSelected) {
+          key.value = "";
+        }
+        aesModeSelected = nowUsesAes;
         updateKeyVisibility();
         await transformText();
-      });
+      }
+
+      type.addEventListener("change", handleModeChange);
+      inputType.addEventListener("change", handleModeChange);
 
       transformBtn.addEventListener("click", async () => {
         await transformText();

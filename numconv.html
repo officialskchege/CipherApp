@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#071219" />
     <title>CipherApp — Number Converter</title>
+    <script src="theme.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -26,11 +27,6 @@
             transparent 24%
           ),
           linear-gradient(180deg, #031006 0%, #000500 100%);
-      }
-
-      .topbar,
-      .footer {
-        display: none;
       }
 
       .center {
@@ -536,7 +532,7 @@
     </style>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
+  <body class="tool-page">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
     <div class="tips-overlay">
@@ -556,6 +552,42 @@
         </svg>
         <span>Home</span>
       </a>
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Switch to light theme"
+        aria-pressed="false"
+      >
+        <svg
+          class="theme-icon theme-icon-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+        </svg>
+        <svg
+          class="theme-icon theme-icon-moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
+        </svg>
+        <span class="theme-label">Dark theme</span>
+      </button>
       <button
         class="tips-toggle"
         id="tipsToggle"
@@ -616,7 +648,7 @@
     </header>
 
     <main class="center" id="main-content" tabindex="-1">
-      <div class="cipher-shell">
+      <div class="cipher-shell converter-layout">
         <section class="workspace-intro" aria-label="Number converter overview">
           <div class="workspace-kicker">CipherApp utilities</div>
           <h1>Number System Converter</h1>
@@ -677,7 +709,7 @@
                 <option value="34">Base 34</option>
                 <option value="35">Base 35</option>
                 <option value="36">Base 36 (Alphanumeric)</option>
-                <option value="base64">Base 64 (Base64)</option>
+                <option value="base64">Base 64 (integer bytes)</option>
               </select>
             </div>
 
@@ -719,7 +751,7 @@
                 <option value="34">Base 34</option>
                 <option value="35">Base 35</option>
                 <option value="36">Base 36 (Alphanumeric)</option>
-                <option value="base64">Base 64 (Base64)</option>
+                <option value="base64">Base 64 (integer bytes)</option>
               </select>
             </div>
           </div>
@@ -731,7 +763,7 @@
               name="numberInput"
               autocomplete="off"
               spellcheck="false"
-              placeholder="For example, 101101, 7A3, or Base64…"
+              placeholder="For example, 101101, 7A3, or Base64 integer bytes…"
             ></textarea>
           </div>
         </section>
@@ -765,7 +797,10 @@
               <label class="output-label">Notes</label>
               <div class="dev-bio">
                 Supports bases 2 through 36. Letters A–Z represent values 10–35.
-                Base 64 is available as a separate encoding mode.
+                Base 64 here treats bytes as an unsigned integer. For ordinary
+                text, use the separate Base64 Text tool below. Leading zero
+                bytes are retained when converting directly between Base64 and
+                binary, octal, or hexadecimal.
               </div>
             </div>
           </div>
@@ -788,6 +823,118 @@
             </div>
           </div>
         </section>
+
+        <section
+          class="wire-panel batch-panel"
+          aria-label="Batch number conversion"
+        >
+          <div class="panel-heading">
+            <div>
+              <h2>Batch Convert</h2>
+              <p>
+                Convert up to 100 values using the selected bases. Enter one
+                value per line; blank lines are ignored. Results stay in this
+                browser session.
+              </p>
+            </div>
+          </div>
+
+          <section class="batch-help" aria-labelledby="numberBatchHelpHeading">
+            <h3 id="numberBatchHelpHeading">How batch processing works</h3>
+            <ol>
+              <li>Put one value on each line. Empty lines are skipped.</li>
+              <li>
+                Choose the source and target bases once; the same conversion
+                settings are applied independently to every value.
+              </li>
+              <li>
+                Run the batch to see each converted value or its own error. Up
+                to 100 non-empty values can be processed at a time.
+              </li>
+              <li>
+                Copy or download the JSON results. Base64 here means integer
+                bytes; use the separate Base64 Text tool for UTF-8 text.
+              </li>
+            </ol>
+            <p>
+              Inputs and results stay in page memory unless you copy or
+              download them.
+            </p>
+          </section>
+
+          <div class="field-group">
+            <label for="numberBatchInput">Values</label>
+            <textarea
+              id="numberBatchInput"
+              name="numberBatchInput"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Enter one value per line…"
+            ></textarea>
+          </div>
+
+          <div class="controls">
+            <button class="big-btn" id="numberBatchRunBtn">Run Batch</button>
+            <button class="link-btn" id="numberBatchClearBtn">Clear Batch</button>
+            <button class="link-btn" id="numberBatchCopyBtn" disabled>Copy JSON</button>
+            <button class="link-btn" id="numberBatchDownloadBtn" disabled>
+              Download JSON
+            </button>
+          </div>
+
+          <div id="numberBatchStatus" class="dev-bio" aria-live="polite"></div>
+          <ol
+            id="numberBatchResults"
+            class="batch-results"
+            aria-label="Batch results"
+          ></ol>
+        </section>
+
+        <section class="wire-panel base64-text-panel" aria-label="Base64 text encoding">
+          <div class="panel-heading">
+            <div>
+              <h2>Base64 Text</h2>
+              <p>
+                Encode UTF-8 text as Base64 or decode Base64 back to text. This
+                is separate from the number converter’s Base64 integer mode.
+              </p>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="base64TextMode">Direction</label>
+            <select id="base64TextMode" name="base64TextMode" autocomplete="off">
+              <option value="encode">Text to Base64</option>
+              <option value="decode">Base64 to Text</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label id="base64TextInputLabel" for="base64TextInput">Text</label>
+            <textarea
+              id="base64TextInput"
+              name="base64TextInput"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Enter text to encode…"
+            ></textarea>
+          </div>
+
+          <div class="controls">
+            <button class="big-btn" id="base64TextConvertBtn">Convert Text</button>
+            <button class="link-btn" id="base64TextClearBtn">Clear</button>
+            <button class="link-btn" id="base64TextCopyBtn" disabled>Copy Result</button>
+          </div>
+
+          <div
+            id="base64TextOutput"
+            class="output-area base64-text-output"
+            aria-live="polite"
+          >
+            Result will appear here.
+          </div>
+          <div id="base64TextStatus" class="dev-bio" aria-live="polite"></div>
+        </section>
       </div>
     </main>
 
@@ -805,6 +952,24 @@
       const tipsOverlay = document.querySelector(".tips-overlay");
       const tipsToggle = document.getElementById("tipsToggle");
       const tipsPopup = document.getElementById("tipsPopup");
+      const base64TextMode = document.getElementById("base64TextMode");
+      const base64TextInput = document.getElementById("base64TextInput");
+      const base64TextInputLabel = document.getElementById("base64TextInputLabel");
+      const base64TextConvertBtn = document.getElementById("base64TextConvertBtn");
+      const base64TextClearBtn = document.getElementById("base64TextClearBtn");
+      const base64TextCopyBtn = document.getElementById("base64TextCopyBtn");
+      const base64TextOutput = document.getElementById("base64TextOutput");
+      const base64TextStatus = document.getElementById("base64TextStatus");
+      const batchInput = document.getElementById("numberBatchInput");
+      const batchRunBtn = document.getElementById("numberBatchRunBtn");
+      const batchClearBtn = document.getElementById("numberBatchClearBtn");
+      const batchCopyBtn = document.getElementById("numberBatchCopyBtn");
+      const batchDownloadBtn = document.getElementById("numberBatchDownloadBtn");
+      const batchStatus = document.getElementById("numberBatchStatus");
+      const batchResultsList = document.getElementById("numberBatchResults");
+      let base64TextResult = null;
+      let convertedValue = null;
+      let batchRecords = [];
 
       function normalizeNumber(value) {
         return value.replace(/[_\s]+/g, "").toUpperCase();
@@ -851,7 +1016,16 @@
       function base64ToBytes(value) {
         try {
           const normalized = value.replace(/\s+/g, "");
-          const decoded = atob(normalized);
+          if (
+            !normalized ||
+            normalized.length % 4 === 1 ||
+            !/^[A-Za-z0-9+/]*={0,2}$/.test(normalized)
+          ) {
+            throw new Error("Invalid Base64 input.");
+          }
+          const decoded = atob(
+            normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "="),
+          );
           return Uint8Array.from(decoded, (char) => char.charCodeAt(0));
         } catch {
           throw new Error("Invalid Base 64 input.");
@@ -859,7 +1033,14 @@
       }
 
       function bytesToBase64(bytes) {
-        return btoa(String.fromCharCode(...bytes));
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+          binary += String.fromCharCode(
+            ...bytes.subarray(offset, offset + chunkSize),
+          );
+        }
+        return btoa(binary);
       }
 
       function bytesToBigInt(bytes) {
@@ -870,15 +1051,22 @@
         return result;
       }
 
-      function bigIntToBytes(value) {
-        if (value === 0n) return new Uint8Array([0]);
-        let n = value < 0n ? -value : value;
+      function bigIntToBytes(value, minimumLength = 1) {
+        if (value < 0n) {
+          throw new Error("Base64 integer mode does not support negative values.");
+        }
+        if (value === 0n) {
+          return new Uint8Array(Math.max(1, minimumLength));
+        }
+        let n = value;
         const bytes = [];
         while (n > 0n) {
           bytes.unshift(Number(n & 0xffn));
           n >>= 8n;
         }
-        return new Uint8Array(bytes);
+        const result = new Uint8Array(Math.max(minimumLength, bytes.length));
+        result.set(bytes, result.length - bytes.length);
+        return result;
       }
 
       function parseValue(sourceValue, mode) {
@@ -890,17 +1078,48 @@
         return parseBigInt(sourceValue, Number(mode));
       }
 
-      function formatValue(value, mode) {
+      function formatValue(value, mode, byteLength) {
         if (mode === "base64") {
-          return bytesToBase64(bigIntToBytes(value));
+          return bytesToBase64(bigIntToBytes(value, byteLength));
         }
 
-        return formatBigInt(value, Number(mode));
+        const formatted = formatBigInt(value, Number(mode));
+        if (value < 0n) return formatted;
+        const digitWidth = {
+          "2": byteLength * 8,
+          "8": Math.ceil((byteLength * 8) / 3),
+          "16": byteLength * 2,
+        }[mode];
+        return digitWidth
+          ? formatted.padStart(digitWidth, "0")
+          : formatted;
+      }
+
+      function getByteLength(sourceValue, mode, value) {
+        if (mode === "base64") {
+          return base64ToBytes(sourceValue).length;
+        }
+        if (["2", "8", "16"].includes(mode)) {
+          const digits = normalizeNumber(sourceValue).replace(/^[+-]/, "");
+          const digitByteLength = {
+            "2": Math.ceil(digits.length / 8),
+            "8": Math.floor((3 * (digits.length - 1)) / 8) + 1,
+            "16": Math.ceil(digits.length / 2),
+          }[mode];
+          const bitLength = value < 0n ? -value : value;
+          return Math.max(
+            1,
+            digitByteLength,
+            Math.ceil(bitLength.toString(2).length / 8),
+          );
+        }
+        return Math.max(1, Math.ceil(value.toString(2).replace("-", "").length / 8));
       }
 
       function formatWithSubscript(valueStr, mode) {
         // Show the converted value with a subscript for the output base.
-        const label = mode === "base64" ? "base 64" : String(mode);
+        const label =
+          mode === "base64" ? "base 64 integer" : String(mode);
 
         return `${valueStr}<sub>${label}</sub>`;
       }
@@ -908,6 +1127,7 @@
       function convertNumber() {
         const sourceValue = input.value.trim();
         if (!sourceValue) {
+          convertedValue = null;
           output.textContent = "Enter a number to convert.";
           return;
         }
@@ -916,13 +1136,157 @@
         const to = toBase.value;
 
         try {
-          const parsed = parseValue(sourceValue, from);
-          const valueStr = formatValue(parsed, to);
+          const valueStr = convertNumberValue(sourceValue, from, to);
+          convertedValue = valueStr;
           output.innerHTML = formatWithSubscript(valueStr, to);
         } catch (error) {
+          convertedValue = null;
           output.textContent = error.message;
         }
       }
+
+      function convertNumberValue(sourceValue, from, to) {
+        const parsed = parseValue(sourceValue, from);
+        const byteLength = getByteLength(sourceValue, from, parsed);
+        return formatValue(parsed, to, byteLength);
+      }
+
+      function clearBatchResults() {
+        batchRecords = [];
+        batchResultsList.replaceChildren();
+        batchCopyBtn.disabled = true;
+        batchDownloadBtn.disabled = true;
+      }
+
+      function renderBatchResults() {
+        const fragment = document.createDocumentFragment();
+        for (const record of batchRecords) {
+          const item = document.createElement("li");
+          const heading = document.createElement("div");
+          const lineLabel = document.createElement("strong");
+          const statusLabel = document.createElement("span");
+          const inputLabel = document.createElement("strong");
+          const inputText = document.createElement("pre");
+          const resultLabel = document.createElement("strong");
+          const resultText = document.createElement("pre");
+
+          item.className = "batch-result";
+          item.dataset.status = record.error ? "error" : "success";
+          heading.className = "batch-result-heading";
+          lineLabel.textContent = `Line ${record.line}`;
+          statusLabel.textContent = record.error ? "Error" : "Success";
+          inputLabel.textContent = "Input";
+          inputText.textContent = record.input;
+          resultLabel.textContent = record.error ? "Error details" : "Result";
+          resultText.textContent = record.error || record.result;
+          heading.append(lineLabel, statusLabel);
+          item.append(heading, inputLabel, inputText, resultLabel, resultText);
+          fragment.append(item);
+        }
+        batchResultsList.replaceChildren(fragment);
+      }
+
+      function getBatchJson() {
+        return JSON.stringify(batchRecords, null, 2);
+      }
+
+      async function runNumberBatch() {
+        const rows = batchInput.value
+          .split(/\r?\n/)
+          .map((text, index) => ({ line: index + 1, input: text }))
+          .filter((row) => row.input.trim());
+
+        clearBatchResults();
+        if (rows.length === 0) {
+          batchStatus.textContent = "Enter at least one non-empty value.";
+          return;
+        }
+        if (rows.length > 100) {
+          batchStatus.textContent =
+            "Batch limit is 100 non-empty values. Split the input into smaller batches.";
+          return;
+        }
+
+        batchStatus.textContent = `Processing ${rows.length} values…`;
+        const lockedControls = [fromBase, toBase, convertBtn, swapBtn];
+        const originalDisabledStates = lockedControls.map(
+          (control) => control.disabled,
+        );
+        lockedControls.forEach((control) => {
+          control.disabled = true;
+        });
+        batchRunBtn.disabled = true;
+        batchClearBtn.disabled = true;
+
+        try {
+          for (let index = 0; index < rows.length; index += 1) {
+            const row = rows[index];
+            try {
+              const result = convertNumberValue(
+                row.input.trim(),
+                fromBase.value,
+                toBase.value,
+              );
+              batchRecords.push({ line: row.line, input: row.input, result });
+            } catch (error) {
+              batchRecords.push({
+                line: row.line,
+                input: row.input,
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to convert this value.",
+              });
+            }
+
+            if ((index + 1) % 10 === 0 && index + 1 < rows.length) {
+              batchStatus.textContent = `Processed ${index + 1} of ${rows.length} values…`;
+              renderBatchResults();
+              await new Promise((resolve) => setTimeout(resolve, 0));
+            }
+          }
+          renderBatchResults();
+          const failures = batchRecords.filter((record) => record.error).length;
+          batchStatus.textContent =
+            `Processed ${rows.length} values: ${rows.length - failures} succeeded, ${failures} failed.`;
+          batchCopyBtn.disabled = false;
+          batchDownloadBtn.disabled = false;
+        } finally {
+          lockedControls.forEach((control, index) => {
+            control.disabled = originalDisabledStates[index];
+          });
+          batchRunBtn.disabled = false;
+          batchClearBtn.disabled = false;
+        }
+      }
+
+      batchRunBtn.addEventListener("click", runNumberBatch);
+      batchClearBtn.addEventListener("click", () => {
+        batchInput.value = "";
+        batchStatus.textContent = "";
+        clearBatchResults();
+        batchInput.focus();
+      });
+      batchCopyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(getBatchJson());
+          batchStatus.textContent = "Batch JSON copied.";
+        } catch {
+          batchStatus.textContent =
+            "Clipboard access failed. Select and copy the results manually.";
+        }
+      });
+      batchDownloadBtn.addEventListener("click", () => {
+        const file = new Blob([getBatchJson()], {
+          type: "application/json;charset=utf-8",
+        });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "cipherapp-number-batch.json";
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
 
       convertBtn.addEventListener("click", convertNumber);
       fromBase.addEventListener("change", convertNumber);
@@ -935,17 +1299,72 @@
         convertNumber();
       });
 
+      function updateBase64TextMode() {
+        const isEncoding = base64TextMode.value === "encode";
+        base64TextInputLabel.textContent = isEncoding ? "Text" : "Base64 input";
+        base64TextInput.placeholder = isEncoding
+          ? "Enter text to encode…"
+          : "Paste Base64 text to decode…";
+        base64TextOutput.textContent = "Result will appear here.";
+        base64TextStatus.textContent = "";
+        base64TextResult = null;
+        base64TextCopyBtn.disabled = true;
+      }
+
+      function convertBase64Text() {
+        base64TextStatus.textContent = "";
+        try {
+          if (base64TextMode.value === "encode") {
+            base64TextResult = bytesToBase64(
+              new TextEncoder().encode(base64TextInput.value),
+            );
+          } else {
+            const bytes = base64ToBytes(base64TextInput.value);
+            base64TextResult = new TextDecoder("utf-8", { fatal: true }).decode(
+              bytes,
+            );
+          }
+          base64TextOutput.textContent = base64TextResult;
+          base64TextCopyBtn.disabled = base64TextResult.length === 0;
+        } catch (error) {
+          base64TextResult = null;
+          base64TextCopyBtn.disabled = true;
+          base64TextOutput.textContent =
+            base64TextMode.value === "decode"
+              ? "Unable to decode. Check that the input is valid Base64 containing UTF-8 text."
+              : error.message;
+        }
+      }
+
+      base64TextMode.addEventListener("change", updateBase64TextMode);
+      base64TextConvertBtn.addEventListener("click", convertBase64Text);
+      base64TextClearBtn.addEventListener("click", () => {
+        base64TextInput.value = "";
+        updateBase64TextMode();
+        base64TextInput.focus();
+      });
+      base64TextCopyBtn.addEventListener("click", async () => {
+        if (base64TextResult === null) return;
+        try {
+          await navigator.clipboard.writeText(base64TextResult);
+          base64TextStatus.textContent = "Result copied.";
+        } catch {
+          base64TextStatus.textContent =
+            "Clipboard access failed. Select and copy the result manually.";
+        }
+      });
+
       clearBtn.addEventListener("click", () => {
         input.value = "";
+        convertedValue = null;
         output.textContent = "Results";
       });
 
       copyBtn.addEventListener("click", async () => {
-        const text = output.textContent;
-        if (!text || text === "Results") return;
+        if (convertedValue === null) return;
 
         try {
-          await navigator.clipboard.writeText(text);
+          await navigator.clipboard.writeText(convertedValue);
           const original = copyBtn.textContent;
           copyBtn.textContent = "Copied!";
           setTimeout(() => {
