@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#071219" />
     <title>CipherApp — Home</title>
+    <script src="theme.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -34,6 +35,42 @@
         </svg>
         CipherApp
       </div>
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Switch to light theme"
+        aria-pressed="false"
+      >
+        <svg
+          class="theme-icon theme-icon-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+        </svg>
+        <svg
+          class="theme-icon theme-icon-moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
+        </svg>
+        <span class="theme-label">Dark theme</span>
+      </button>
     </header>
 
     <main class="center" id="main-content" tabindex="-1">
@@ -70,7 +107,7 @@
             </svg>
           </span>
           Cipher Text
-          <span class="tool-description">Encode, decode, and transform messages.</span>
+          <span class="tool-description">Transform messages individually or in batches of up to 100 lines.</span>
         </a>
         <a class="big-btn" href="numconv.html">
           <span class="tool-icon">
@@ -89,7 +126,7 @@
             </svg>
           </span>
           Number Converter
-          <span class="tool-description">Convert values between bases 2–36 and Base64.</span>
+          <span class="tool-description">Convert values individually or in batches between bases 2–36 and Base64.</span>
         </a>
         <a class="big-btn" href="numcalc.html">
           <span class="tool-icon">

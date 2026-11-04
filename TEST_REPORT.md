@@ -2,13 +2,13 @@
 
 **Date:** 2026-06-11  
 **Tester:** Automated Testing  
-**Status:** READY FOR USE
+**Status:** READY FOR EDUCATIONAL USE
 
 ---
 
 ## Executive Summary
 
-CipherApp has been tested with 12 different cipher operations and all tests **PASSED** successfully. The application is **fully functional and ready for production use**. All core features work correctly including:
+CipherApp has been tested with 12 different cipher operations and all tests **PASSED** successfully. The application is functional for learning and experimentation; it has not been reviewed for production security or secure messaging. Core features include:
 
 - Multiple cipher types (11 different ciphers)
 - Encoding/Decoding operations
@@ -195,7 +195,7 @@ CipherApp has been tested with 12 different cipher operations and all tests **PA
 
 ### For Production Use
 
-1. **Security Note:** AES encryption uses 256-bit keys derived with PBKDF2 (200,000 iterations)
+1. **Security Note:** AES-GCM uses 256-bit keys derived with PBKDF2 (200,000 iterations), plus a fresh random salt and IV for new encryption. Use a strong, unique passphrase and keep it with the complete ciphertext.
 2. **Browser Compatibility:** Ensure users have modern browsers (Web Crypto API support required)
 3. **Data Privacy:** All operations run client-side; no data is transmitted to servers
 
@@ -210,12 +210,45 @@ CipherApp has been tested with 12 different cipher operations and all tests **PA
 
 ## Conclusion
 
-**CipherApp is READY FOR PRODUCTION USE**
+**CipherApp is READY FOR EDUCATIONAL USE**
 
-All 12 different cipher operations have been tested successfully with diverse input data. The application handles both simple substitution ciphers and advanced encryption methods. Error handling is robust, and the UI is responsive and user-friendly. The app meets all requirements for a functional cipher tool.
+All 12 cipher operations have been tested with diverse input data. The application handles both simple substitution ciphers and AES-GCM encryption. The follow-up tests above cover the versioned AES format, legacy ciphertext compatibility, UTF-8 Base64 text, and leading zero bytes. CipherApp is intended for learning and experimentation, not as a substitute for a reviewed secure messaging system.
 
 **Overall Assessment:** PASS - All features working as expected
 
 ---
 
 _Test Report Generated: 2026-06-11_
+
+## Follow-up Feature Validation
+
+**Date:** 2026-11-04
+
+- AES v1 encryption emits the versioned prefix and produces distinct output
+  for repeated encryption with the same passphrase and message.
+- AES v1 decrypts to the original message, including leading and trailing
+  whitespace; an incorrect passphrase returns a clear decryption error.
+- Legacy AES ciphertext using the original fixed salt still decrypts.
+- Base64 text mode round-trips UTF-8 text including accented characters and
+  emoji, and rejects invalid UTF-8 payloads.
+- Base64 integer mode preserves leading zero bytes when converting between
+  Base64 and hexadecimal, octal, or binary, and rejects negative values for
+  Base64 output.
+- The Cipher Text Base64 option round-trips UTF-8 text including non-ASCII
+  characters.
+
+## Batch Processing Validation
+
+**Date:** 2026-11-04
+
+- Cipher batches transform individual lines with the selected cipher settings,
+  skip blank lines, preserve original line numbers, and report invalid input
+  per item.
+- AES batch encryption and decryption round-trip multiple messages; each
+  encrypted message uses the existing versioned AES format.
+- Number batches convert valid values while preserving per-line conversion
+  errors, including Base64 integer leading-zero bytes.
+- Batches over 100 non-empty lines are rejected with a clear limit message.
+- Batch JSON copy and download actions were verified.
+- Cipher and number batch layouts have no horizontal overflow at a 375px
+  viewport.
