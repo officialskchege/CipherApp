@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071219" />
     <title>CipherApp — Number System Calculator</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
       rel="stylesheet"
@@ -331,14 +333,46 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
-
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
+    <header class="topbar">
+      <div class="brand">
+        <svg
+          class="brand-mark"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M12 3 20 7v5c0 4.5-3.1 7.5-8 9-4.9-1.5-8-4.5-8-9V7l8-4Z" />
+          <path d="M9.5 12h5M12 9.5v5" />
+        </svg>
+        CipherApp
+      </div>
+    </header>
 
     <div class="tips-overlay">
       <a class="link-btn" href="index.html" aria-label="Back to home">
-        <span aria-hidden="true">🏠</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="m3 10 9-7 9 7" />
+          <path d="M5 9v11h14V9M9 20v-6h6v6" />
+        </svg>
         <span>Home</span>
       </a>
       <button
@@ -348,7 +382,19 @@
         aria-controls="tipsPopup"
         aria-label="Calculator tips"
       >
-        💡
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M9 18h6M10 22h4M8 14.5A6 6 0 1 1 16 14c-.8.6-1 1.2-1 2H9c0-.7-.3-1.1-1-1.5Z" />
+          <path d="M12 2v1" />
+        </svg>
       </button>
       <div
         class="tips-popup"
@@ -373,7 +419,7 @@
       </div>
     </div>
 
-    <main class="center">
+    <main class="center" id="main-content" tabindex="-1">
       <div class="cipher-shell">
         <div class="page-header">
           <div>
@@ -383,14 +429,28 @@
               output the result in another base.
             </p>
           </div>
-          <a class="link-btn" href="index.html">← Back to Home</a>
+          <a class="link-btn" href="index.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="m14 5-7 7 7 7M7 12h14" />
+            </svg>
+            Back to Home
+          </a>
         </div>
 
         <div class="panel-grid">
           <section class="panel-card">
             <div class="field-group">
               <label for="fromBase">From base</label>
-              <select id="fromBase">
+              <select id="fromBase" name="fromBase" autocomplete="off">
                 <option value="2">Base 2 (Binary)</option>
                 <option value="3">Base 3</option>
                 <option value="4">Base 4</option>
@@ -432,7 +492,7 @@
 
             <div class="field-group">
               <label for="toBase">To base</label>
-              <select id="toBase">
+              <select id="toBase" name="toBase" autocomplete="off">
                 <option value="2">Base 2 (Binary)</option>
                 <option value="3">Base 3</option>
                 <option value="4">Base 4</option>
@@ -476,7 +536,10 @@
               <label for="expressionInput">Expression</label>
               <textarea
                 id="expressionInput"
-                placeholder="Example: (1010 + 11) * 10  |  or  -1A * 2"
+                name="expression"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="For example, (1010 + 11) * 10…"
               ></textarea>
             </div>
 
@@ -492,14 +555,14 @@
 
           <aside class="panel-card right">
             <div class="field-group" style="margin-top: 0">
-              <label>Result</label>
+              <h2 class="output-label">Result</h2>
               <div id="calcOutput" class="output-area" aria-live="polite">
                 Results
               </div>
             </div>
 
             <div class="field-group">
-              <label>Supported</label>
+              <h2 class="output-label">Supported</h2>
               <div
                 style="color: var(--muted); font-size: 13px; line-height: 1.6"
               >
@@ -523,7 +586,7 @@
       </div>
     </main>
 
-    <footer class="footer">CipherApp • Experiment responsibly</footer>
+    <footer class="footer">CipherApp · Experiment responsibly</footer>
 
     <script>
       const input = document.getElementById("expressionInput");

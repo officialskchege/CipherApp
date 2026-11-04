@@ -2,52 +2,129 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071219" />
     <title>CipherApp — Home</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
     <header class="topbar">
-      <div class="brand">CipherApp</div>
+      <div class="brand">
+        <svg
+          class="brand-mark"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M12 3 20 7v5c0 4.5-3.1 7.5-8 9-4.9-1.5-8-4.5-8-9V7l8-4Z" />
+          <path d="M9.5 12h5M12 9.5v5" />
+        </svg>
+        CipherApp
+      </div>
     </header>
 
-    <main class="center">
+    <main class="center" id="main-content" tabindex="-1">
       <h1>CipherApp</h1>
       <p class="lead">
-        A lightweight web tool to cipher and decipher text, convert between
-        number systems, and perform quick calculations.
+        A private workspace for transforming messages, converting number bases,
+        and calculating directly across numeral systems.
       </p>
 
       <section class="how">
-        <h2>How to use</h2>
+        <h2>Start with a tool</h2>
         <ol>
-          <li>
-            Choose a tool below (Cipher Text, Number System Conversion,
-            Calculations).
-          </li>
-          <li>Enter the text or numbers you want to transform.</li>
-          <li>Click the action button and copy the result.</li>
+          <li>Choose a workspace and enter your text or numbers.</li>
+          <li>Set the cipher or bases, then run the transformation.</li>
+          <li>Review and copy the result when you’re ready.</li>
         </ol>
       </section>
 
-      <div class="actions-row">
-        <a class="big-btn" href="ciphertext.html">Cipher Text</a>
-        <a class="big-btn" href="numconv.html">Number System Conversion</a>
-        <a class="big-btn" href="numcalc.html">Calculations</a>
-      </div>
+      <nav class="actions-row" id="tools" aria-label="CipherApp tools">
+        <a class="big-btn" href="ciphertext.html">
+          <span class="tool-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="4" y="5" width="16" height="14" rx="3" />
+              <path d="m8 10 2 2-2 2M13 14h3" />
+            </svg>
+          </span>
+          Cipher Text
+          <span class="tool-description">Encode, decode, and transform messages.</span>
+        </a>
+        <a class="big-btn" href="numconv.html">
+          <span class="tool-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M7 7h13l-3-3M17 17H4l3 3" />
+              <path d="M5 11h2v5M13 11h-2l2-2v7" />
+            </svg>
+          </span>
+          Number Converter
+          <span class="tool-description">Convert values between bases 2–36 and Base64.</span>
+        </a>
+        <a class="big-btn" href="numcalc.html">
+          <span class="tool-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="4" y="3" width="16" height="18" rx="3" />
+              <path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2" />
+            </svg>
+          </span>
+          Number Calculator
+          <span class="tool-description">Evaluate expressions across number systems.</span>
+        </a>
+      </nav>
 
       <div class="extra-row">
-        <a class="link-btn" href="#tools">More Tools</a>
-        <a class="link-btn" href="#docs">Docs</a>
+        <a class="link-btn" href="README.md">Project Notes</a>
       </div>
 
       <aside class="dev-card">
-        <img src="imgs/ME.png" alt="Creator" class="dp" />
+        <img
+          src="imgs/ME.png"
+          alt="Creator"
+          class="dp"
+          width="56"
+          height="56"
+          loading="lazy"
+        />
         <div>
           <div class="dev-name">Creator</div>
           <div class="dev-bio">
@@ -58,6 +135,6 @@
       </aside>
     </main>
 
-    <footer class="footer">CipherApp • Experiment responsibly</footer>
+    <footer class="footer">CipherApp · Experiment responsibly</footer>
   </body>
 </html>
