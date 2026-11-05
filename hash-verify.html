@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071219" />
+    <title>CipherApp — Hash &amp; Verify</title>
+    <script src="theme.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="tool-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="matrix"></div>
+    <div class="tips-overlay">
+      <a class="home-link" href="index.html" aria-label="Back to home">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="m3 10 9-7 9 7" />
+          <path d="M5 9v11h14V9M9 20v-6h6v6" />
+        </svg>
+        <span>Home</span>
+      </a>
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Switch to light theme"
+        aria-pressed="false"
+      >
+        <svg
+          class="theme-icon theme-icon-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+        </svg>
+        <svg
+          class="theme-icon theme-icon-moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
+        </svg>
+        <span class="theme-label">Dark theme</span>
+      </button>
+      <button
+        class="link-btn hash-docs-button"
+        id="openDocsBtn"
+        type="button"
+        aria-haspopup="dialog"
+        aria-controls="hashDocs"
+      >
+        How to use
+      </button>
+    </div>
+
+    <main class="center" id="main-content" tabindex="-1">
+      <div class="cipher-shell hash-layout">
+        <section class="workspace-intro" aria-label="Hash and verify overview">
+          <div class="workspace-kicker">CipherApp utilities</div>
+          <h1>Hash &amp; Verify</h1>
+          <p>
+            Create SHA-256, SHA-384, or SHA-512 digests for text and files, then
+            compare a digest to check that data matches.
+          </p>
+          <p class="security-note">
+            Hashes are one-way checksums, not encryption or password storage.
+            Your input stays in this browser and is not saved by CipherApp.
+          </p>
+        </section>
+
+        <section class="wire-panel hash-input-panel" aria-label="Hash text or file">
+          <div class="panel-heading">
+            <div>
+              <h2>Hash text or file</h2>
+              <p>Choose text or a file, select an algorithm, and generate a digest.</p>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="sourceMode">Input type</label>
+            <select id="sourceMode" name="sourceMode">
+              <option value="text">Text</option>
+              <option value="file">File</option>
+            </select>
+          </div>
+
+          <div class="field-group" id="textSource">
+            <label for="textInput">Text to hash</label>
+            <textarea
+              id="textInput"
+              name="textInput"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Enter text to hash…"
+            ></textarea>
+          </div>
+
+          <div class="field-group" id="fileSource" hidden>
+            <label for="fileInput">File to hash</label>
+            <input id="fileInput" name="fileInput" type="file" />
+            <p class="dev-bio">The selected file is read locally and is not uploaded.</p>
+          </div>
+
+          <div class="field-group">
+            <label for="algorithm">Algorithm</label>
+            <select id="algorithm" name="algorithm">
+              <option value="SHA-256">SHA-256</option>
+              <option value="SHA-384">SHA-384</option>
+              <option value="SHA-512">SHA-512</option>
+            </select>
+          </div>
+
+          <div class="controls">
+            <button class="big-btn" id="hashBtn" type="button">Generate Hash</button>
+            <button class="link-btn" id="clearBtn" type="button">Clear</button>
+          </div>
+
+          <div class="field-group">
+            <label for="hashOutput">Hash result</label>
+            <textarea
+              id="hashOutput"
+              class="hash-output"
+              rows="3"
+              readonly
+              spellcheck="false"
+              aria-live="polite"
+              placeholder="Hash will appear here…"
+            ></textarea>
+          </div>
+          <div class="controls">
+            <button class="link-btn" id="copyHashBtn" type="button" disabled>
+              Copy Hash
+            </button>
+          </div>
+          <p id="hashStatus" class="dev-bio" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="wire-panel hash-verify-panel" aria-label="Verify a hash">
+          <div class="panel-heading">
+            <div>
+              <h2>Verify hash</h2>
+              <p>Check whether your input matches a digest you already have.</p>
+            </div>
+          </div>
+          <p class="hash-section-note">
+            First choose the same text or file and algorithm used to create the
+            known hash, then paste that hash below.
+          </p>
+          <div class="field-group">
+            <label for="expectedHash">Expected hash (hexadecimal)</label>
+            <input
+              id="expectedHash"
+              name="expectedHash"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Paste the expected digest…"
+            />
+          </div>
+          <div class="controls">
+            <button class="big-btn" id="verifyBtn" type="button">Verify Hash</button>
+          </div>
+          <div
+            id="verifyStatus"
+            class="hash-verification-result"
+            role="status"
+            aria-live="polite"
+          ></div>
+        </section>
+
+        <section class="wire-panel hash-batch-panel" aria-label="Batch hash text">
+          <div class="panel-heading">
+            <div>
+              <h2>Batch hash text</h2>
+              <p>
+                Hash up to 100 lines independently with the selected algorithm.
+              </p>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="batchInput">One text value per line</label>
+            <textarea
+              id="batchInput"
+              name="batchInput"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Enter one value per line…"
+            ></textarea>
+          </div>
+          <div class="controls">
+            <button class="big-btn" id="batchBtn" type="button">Run Batch</button>
+            <button class="link-btn" id="clearBatchBtn" type="button">Clear Batch</button>
+            <button class="link-btn" id="copyBatchBtn" type="button" disabled>Copy JSON</button>
+            <button class="link-btn" id="downloadBatchBtn" type="button" disabled>
+              Download JSON
+            </button>
+          </div>
+          <p id="batchStatus" class="dev-bio" role="status" aria-live="polite"></p>
+          <ol
+            id="batchOutput"
+            class="batch-results hash-batch-results"
+            aria-label="Batch hash results"
+            aria-live="polite"
+          ></ol>
+          <p id="batchEmptyState" class="hash-empty-state">Batch results will appear here.</p>
+        </section>
+      </div>
+    </main>
+
+    <dialog
+      class="hash-docs-dialog"
+      id="hashDocs"
+      aria-labelledby="hashDocsTitle"
+    >
+      <div class="hash-docs-header">
+        <div>
+          <p class="workspace-kicker">CipherApp guide</p>
+          <h2 id="hashDocsTitle">How Hash &amp; Verify works</h2>
+        </div>
+        <button class="link-btn hash-docs-close" id="closeDocsBtn" type="button">
+          Close
+        </button>
+      </div>
+      <div class="hash-docs-content">
+        <section>
+          <h3>First: what is a hash?</h3>
+          <p>
+            A hash is a short digital fingerprint made from text or a file. If
+            even one character or file byte changes, the fingerprint will
+            almost certainly change too. Making the fingerprint is easy; using
+            it to recover the original text or file is not practical. So a hash
+            is not a way to hide or encrypt your message.
+          </p>
+          <p>
+            For example, the word <code>hello</code> always produces the same
+            SHA-256 hash. Change it to <code>Hello</code> with a capital H and
+            the hash becomes completely different.
+          </p>
+        </section>
+        <section>
+          <h3>Hash text or file</h3>
+          <p>
+            Choose <strong>Text</strong> to type or paste words, or choose
+            <strong>File</strong> to select a file from your device. Pick
+            SHA-256, SHA-384, or SHA-512, then click <strong>Generate Hash</strong>.
+            The result is a hexadecimal string: a sequence of numbers and
+            letters from 0 to f. SHA-256 is a good default for ordinary
+            integrity checks; the three options are different digest lengths
+            of the SHA-2 family.
+          </p>
+          <p>
+            <strong>Copy Hash</strong> copies the result. <strong>Clear</strong>
+            removes the text, selected file, and verification value.
+          </p>
+        </section>
+        <section>
+          <h3>Verify hash</h3>
+          <p>
+            Use this when you already have a trusted hash for a file or text and
+            want to check your copy. Select the same input and algorithm used
+            for that trusted hash, paste it into <strong>Expected hash</strong>,
+            and click <strong>Verify Hash</strong>. “Match” means the input
+            produces that exact hash; “No match” means it does not. A match
+            only helps if the expected hash came from a source you trust.
+          </p>
+        </section>
+        <section>
+          <h3>Batch hash text</h3>
+          <p>
+            Put one text value on each line and click <strong>Run Batch</strong>.
+            Empty lines are skipped, and up to 100 non-empty lines are hashed
+            separately using the selected algorithm. Each result shows its
+            original line number, text, algorithm, and hash. <strong>Copy
+            JSON</strong> or <strong>Download JSON</strong> gives you the
+            results as structured data you can save or use elsewhere.
+          </p>
+        </section>
+        <section>
+          <h3>Privacy and safety</h3>
+          <p>
+            Hashing happens in your browser. Files are read locally; this tool
+            does not upload or save your input. SHA hashes are not encryption
+            and should not be used to store passwords. For sensitive files,
+            compare hashes over a trusted channel.
+          </p>
+        </section>
+      </div>
+    </dialog>
+
+    <footer class="footer">CipherApp · Experiment responsibly</footer>
+
+    <script>
+      const sourceMode = document.getElementById("sourceMode");
+      const textSource = document.getElementById("textSource");
+      const fileSource = document.getElementById("fileSource");
+      const textInput = document.getElementById("textInput");
+      const fileInput = document.getElementById("fileInput");
+      const algorithm = document.getElementById("algorithm");
+      const hashOutput = document.getElementById("hashOutput");
+      const hashStatus = document.getElementById("hashStatus");
+      const expectedHash = document.getElementById("expectedHash");
+      const verifyStatus = document.getElementById("verifyStatus");
+      const copyHashBtn = document.getElementById("copyHashBtn");
+      const batchInput = document.getElementById("batchInput");
+      const batchOutput = document.getElementById("batchOutput");
+      const batchStatus = document.getElementById("batchStatus");
+      const batchEmptyState = document.getElementById("batchEmptyState");
+      const copyBatchBtn = document.getElementById("copyBatchBtn");
+      const downloadBatchBtn = document.getElementById("downloadBatchBtn");
+      const docsDialog = document.getElementById("hashDocs");
+      const openDocsBtn = document.getElementById("openDocsBtn");
+      let batchResults = null;
+      let batchOperation = 0;
+      let hashOperation = 0;
+
+      function updateSourceMode() {
+        const useFile = sourceMode.value === "file";
+        textSource.hidden = useFile;
+        fileSource.hidden = !useFile;
+        clearHashResult();
+      }
+
+      function ensureCrypto() {
+        if (!globalThis.crypto?.subtle) {
+          throw new Error(
+            "Web Crypto is unavailable. Open this page in a modern browser over HTTPS or localhost.",
+          );
+        }
+      }
+
+      async function getInputBytes() {
+        if (sourceMode.value === "file") {
+          const file = fileInput.files[0];
+          if (!file) throw new Error("Choose a file to hash.");
+          return new Uint8Array(await file.arrayBuffer());
+        }
+        return new TextEncoder().encode(textInput.value);
+      }
+
+      function toHex(bytes) {
+        return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+
+      async function hashBytes(bytes, algorithmName) {
+        ensureCrypto();
+        return toHex(new Uint8Array(await crypto.subtle.digest(algorithmName, bytes)));
+      }
+
+      async function hashCurrentInput() {
+        ensureCrypto();
+        return hashBytes(await getInputBytes(), algorithm.value);
+      }
+
+      function clearHashResult() {
+        hashOperation += 1;
+        hashOutput.value = "";
+        hashStatus.textContent = "";
+        verifyStatus.textContent = "";
+        verifyStatus.removeAttribute("data-state");
+        copyHashBtn.disabled = true;
+      }
+
+      sourceMode.addEventListener("change", updateSourceMode);
+      textInput.addEventListener("input", clearHashResult);
+      fileInput.addEventListener("change", clearHashResult);
+      algorithm.addEventListener("change", clearHashResult);
+      expectedHash.addEventListener("input", () => {
+        hashOperation += 1;
+        verifyStatus.textContent = "";
+        verifyStatus.removeAttribute("data-state");
+      });
+      document.getElementById("hashBtn").addEventListener("click", async () => {
+        clearHashResult();
+        const operation = hashOperation;
+        try {
+          const result = await hashCurrentInput();
+          if (operation !== hashOperation) return;
+          hashOutput.value = result;
+          copyHashBtn.disabled = false;
+          hashStatus.textContent = `${algorithm.value} hash generated.`;
+        } catch (error) {
+          if (operation === hashOperation) hashStatus.textContent = error.message;
+        }
+      });
+
+      document.getElementById("verifyBtn").addEventListener("click", async () => {
+        const operation = ++hashOperation;
+        verifyStatus.textContent = "";
+        verifyStatus.removeAttribute("data-state");
+        const expected = expectedHash.value.trim().toLowerCase();
+        const expectedLength = { "SHA-256": 64, "SHA-384": 96, "SHA-512": 128 }[
+          algorithm.value
+        ];
+        if (!new RegExp(`^[0-9a-f]{${expectedLength}}$`).test(expected)) {
+          verifyStatus.textContent =
+            `Enter a ${expectedLength}-character hexadecimal ${algorithm.value} digest.`;
+          return;
+        }
+        try {
+          const actual = await hashCurrentInput();
+          if (operation !== hashOperation) return;
+          hashOutput.value = actual;
+          copyHashBtn.disabled = false;
+          const matches = actual === expected;
+          verifyStatus.dataset.state = matches ? "match" : "mismatch";
+          verifyStatus.textContent = matches
+            ? "Match: the input produces the expected hash."
+            : "No match: the input does not produce the expected hash.";
+        } catch (error) {
+          if (operation === hashOperation) verifyStatus.textContent = error.message;
+        }
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        textInput.value = "";
+        fileInput.value = "";
+        expectedHash.value = "";
+        clearHashResult();
+        textInput.focus();
+      });
+
+      copyHashBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(hashOutput.value);
+          hashStatus.textContent = "Hash copied.";
+        } catch {
+          hashStatus.textContent =
+            "Clipboard access failed. Select and copy the hash manually.";
+        }
+      });
+
+      function clearBatch() {
+        batchOperation += 1;
+        batchResults = null;
+        batchOutput.replaceChildren();
+        batchEmptyState.hidden = false;
+        batchStatus.textContent = "";
+        copyBatchBtn.disabled = true;
+        downloadBatchBtn.disabled = true;
+      }
+
+      algorithm.addEventListener("change", clearBatch);
+      batchInput.addEventListener("input", clearBatch);
+
+      function renderBatchResults(results) {
+        batchOutput.replaceChildren(
+          ...results.map((result) => {
+            const item = document.createElement("li");
+            item.className = "batch-result";
+
+            const heading = document.createElement("div");
+            heading.className = "batch-result-heading";
+            const line = document.createElement("strong");
+            line.textContent = `Line ${result.line}`;
+            const algorithmName = document.createElement("span");
+            algorithmName.textContent = result.algorithm;
+            heading.append(line, algorithmName);
+
+            const inputLabel = document.createElement("strong");
+            inputLabel.textContent = "Input";
+            const inputText = document.createElement("pre");
+            inputText.textContent = result.input;
+
+            const hashLabel = document.createElement("strong");
+            hashLabel.textContent = "Hash";
+            const hashText = document.createElement("pre");
+            hashText.textContent = result.hash;
+
+            item.append(heading, inputLabel, inputText, hashLabel, hashText);
+            return item;
+          }),
+        );
+        batchEmptyState.hidden = results.length > 0;
+      }
+
+      document.getElementById("batchBtn").addEventListener("click", async () => {
+        clearBatch();
+        const operation = batchOperation;
+        const lines = batchInput.value
+          .split(/\r?\n/)
+          .map((text, index) => ({ line: index + 1, text }))
+          .filter(({ text }) => text.trim());
+        if (!lines.length) {
+          batchStatus.textContent = "Enter at least one non-empty line.";
+          return;
+        }
+        if (lines.length > 100) {
+          batchStatus.textContent = "A batch can contain at most 100 non-empty lines.";
+          return;
+        }
+        try {
+          ensureCrypto();
+          const selectedAlgorithm = algorithm.value;
+          const results = [];
+          for (const { line, text } of lines) {
+            results.push({
+              line,
+              input: text,
+              algorithm: selectedAlgorithm,
+              hash: await hashBytes(
+                new TextEncoder().encode(text),
+                selectedAlgorithm,
+              ),
+            });
+            if (operation !== batchOperation) return;
+          }
+          batchResults = results;
+          renderBatchResults(results);
+          copyBatchBtn.disabled = false;
+          downloadBatchBtn.disabled = false;
+          batchStatus.textContent =
+            `${results.length} line(s) hashed with ${selectedAlgorithm}.`;
+        } catch (error) {
+          if (operation === batchOperation) batchStatus.textContent = error.message;
+        }
+      });
+
+      document.getElementById("clearBatchBtn").addEventListener("click", () => {
+        batchInput.value = "";
+        clearBatch();
+        batchInput.focus();
+      });
+
+      copyBatchBtn.addEventListener("click", async () => {
+        if (!batchResults) return;
+        try {
+          await navigator.clipboard.writeText(JSON.stringify(batchResults, null, 2));
+          batchStatus.textContent = "Batch JSON copied.";
+        } catch {
+          batchStatus.textContent =
+            "Clipboard access failed. Select and copy the results manually.";
+        }
+      });
+
+      downloadBatchBtn.addEventListener("click", () => {
+        if (!batchResults) return;
+        const file = new Blob([JSON.stringify(batchResults, null, 2)], {
+          type: "application/json;charset=utf-8",
+        });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "cipherapp-hash-batch.json";
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+
+      openDocsBtn.addEventListener("click", () => docsDialog.showModal());
+      document
+        .getElementById("closeDocsBtn")
+        .addEventListener("click", () => docsDialog.close());
+      docsDialog.addEventListener("click", (event) => {
+        if (event.target === docsDialog) docsDialog.close();
+      });
+    </script>
+  </body>
+</html>

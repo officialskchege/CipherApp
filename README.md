@@ -14,6 +14,8 @@ modern browser to get started; no build step or server is required.
   or use the separate Base64 Text tool for UTF-8 text.
 - `numcalc.html` — evaluate expressions in one base and display the result in
   another.
+- `hash-verify.html` — generate SHA-256, SHA-384, or SHA-512 hashes for text
+  and files, verify an expected digest, or hash up to 100 text lines in a batch.
 
   Use the theme toggle on any page to switch between the default dark theme and
   the light theme. The preference is saved in browser storage.
