@@ -6,336 +6,24 @@
     <meta name="theme-color" content="#071219" />
     <title>CipherApp — Number System Calculator</title>
     <script src="theme.js"></script>
+    <script src="history.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
-
-    <style>
-      body {
-        background:
-          radial-gradient(
-            circle at 14% 8%,
-            rgba(57, 255, 20, 0.15),
-            transparent 28%
-          ),
-          radial-gradient(
-            circle at 86% 92%,
-            rgba(7, 104, 31, 0.34),
-            transparent 24%
-          ),
-          linear-gradient(180deg, #031006 0%, #000500 100%);
-      }
-
-      .center {
-        width: min(100% - clamp(20px, 5vw, 72px), 1360px);
-        max-width: none;
-        margin: clamp(12px, 3vh, 34px) auto;
-        padding: 0;
-        flex: 1;
-        position: relative;
-        z-index: 3;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .matrix {
-        z-index: 0;
-      }
-
-      .cipher-shell {
-        position: relative;
-        z-index: 3;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 18px;
-        width: 100%;
-        min-height: calc(100vh - 70px);
-        border: 1px solid rgba(57, 255, 20, 0.12);
-        border-radius: 18px;
-        background: rgba(0, 0, 0, 0.3);
-        padding: clamp(18px, 3vw, 38px);
-        box-shadow:
-          0 24px 70px rgba(0, 0, 0, 0.46),
-          inset 0 1px 0 rgba(184, 247, 176, 0.08);
-      }
-
-      .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-      }
-
-      .page-header h1 {
-        margin: 0;
-        color: var(--neon);
-        font-size: clamp(32px, 4.6vw, 60px);
-        line-height: 1;
-      }
-
-      .page-header .lead {
-        color: var(--muted);
-        margin: 6px 0 0;
-        font-size: 14px;
-        max-width: 70ch;
-      }
-
-      .link-btn {
-        background: transparent;
-        color: var(--neon);
-        border: 1px solid rgba(57, 255, 20, 0.12);
-        padding: 10px 14px;
-        border-radius: 10px;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .link-btn:hover {
-        background: rgba(57, 255, 20, 0.04);
-      }
-
-      .panel-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 18px;
-        align-items: start;
-      }
-
-      .panel-card {
-        background: rgba(0, 0, 0, 0.35);
-        border: 1px solid rgba(57, 255, 20, 0.08);
-        border-radius: 18px;
-        padding: 18px;
-      }
-
-      .field-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 16px;
-      }
-
-      .field-group label {
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .field-group input,
-      .field-group select,
-      .field-group textarea {
-        width: 100%;
-        border-radius: 14px;
-        border: 1px solid rgba(57, 255, 20, 0.12);
-        background: rgba(255, 255, 255, 0.04);
-        color: #ecffdd;
-        padding: 16px;
-        font-family: inherit;
-        font-size: 14px;
-        outline: none;
-      }
-
-      .field-group select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.07),
-          rgba(0, 0, 0, 0.3)
-        );
-        border: 1px solid rgba(57, 255, 20, 0.16);
-        background-image:
-          linear-gradient(transparent, transparent),
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpolygon fill='%23b8f7b0' points='0,6 20,6 10,14'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 16px center;
-        background-size: 12px 12px;
-        padding-right: 44px;
-      }
-
-      .field-group select:focus {
-        border-color: rgba(57, 255, 20, 0.28);
-        box-shadow: 0 0 0 3px rgba(57, 255, 20, 0.08);
-      }
-
-      .field-group option {
-        background: #031206;
-        color: #ecffdd;
-      }
-
-      .field-group textarea {
-        min-height: 45vh;
-        resize: vertical;
-      }
-
-      .tips-overlay {
-        position: fixed;
-        top: 18px;
-        right: 18px;
-        z-index: 12;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 10px;
-        pointer-events: none;
-      }
-
-      .tips-toggle {
-        pointer-events: auto;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 48px;
-        height: 48px;
-        border: 1px solid rgba(105, 255, 126, 0.35);
-        border-radius: 50%;
-        background: rgba(4, 16, 8, 0.85);
-        color: #f3ffcf;
-        font-size: 1.2rem;
-        cursor: pointer;
-        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
-        transition:
-          transform 160ms ease,
-          border-color 160ms ease,
-          background 160ms ease;
-      }
-
-      .tips-toggle:hover,
-      .tips-toggle:focus {
-        transform: translateY(-1px);
-        border-color: rgba(57, 255, 20, 0.72);
-        background: rgba(10, 34, 12, 0.96);
-      }
-
-      .tips-popup {
-        position: absolute;
-        top: calc(100% + 12px);
-        right: 0;
-        width: min(320px, 86vw);
-        padding: 16px;
-        border-radius: 18px;
-        border: 1px solid rgba(105, 255, 126, 0.14);
-        background: rgba(2, 8, 3, 0.96);
-        color: #e9ffe9;
-        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
-        transform-origin: top right;
-        transform: translateY(-10px);
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition:
-          opacity 180ms ease,
-          transform 180ms ease,
-          visibility 180ms ease;
-      }
-
-      .tips-popup[hidden] {
-        display: none;
-      }
-
-      .tips-overlay.open .tips-popup {
-        display: block;
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-        transform: translateY(0);
-      }
-
-      .tips-popup h2 {
-        margin: 0 0 10px;
-        color: #b8ff9f;
-        font-size: 1rem;
-      }
-
-      .tips-popup ul {
-        margin: 0;
-        padding-left: 18px;
-        color: #c9e6b7;
-        line-height: 1.6;
-      }
-
-      .tips-popup li {
-        margin-bottom: 8px;
-      }
-
-      .tips-popup li:last-child {
-        margin-bottom: 0;
-      }
-
-      .controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 14px;
-      }
-
-      .big-btn {
-        background: linear-gradient(180deg, #b8f7b0, #8fe88a);
-        color: #06220a;
-        border: none;
-        padding: 12px 18px;
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
-      }
-
-      .big-btn:hover {
-        transform: translateY(-1px);
-      }
-
-      .output-area {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(57, 255, 20, 0.08);
-        border-radius: 14px;
-        min-height: 180px;
-        padding: 18px;
-        color: #e6ffe6;
-        font-size: 14px;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-
-      .hint-list {
-        list-style: decimal inside;
-        color: var(--muted);
-        margin-top: 14px;
-        line-height: 1.8;
-      }
-
-      @media (min-width: 940px) {
-        .cipher-shell {
-          grid-template-columns: 1fr;
-        }
-        .panel-grid {
-          grid-template-columns: 1fr 0.55fr;
-        }
-        .panel-grid .panel-card.right {
-          position: sticky;
-          top: 18px;
-        }
-      }
-
-      @media (max-width: 700px) {
-        .field-group textarea {
-          min-height: 34vh;
-        }
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="tool-page">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
     <header class="topbar">
-      <div class="brand">
+      <a class="brand" href="index.html" aria-label="CipherApp home">
         <svg
           class="brand-mark"
           viewBox="0 0 24 24"
@@ -351,7 +39,7 @@
           <path d="M9.5 12h5M12 9.5v5" />
         </svg>
         CipherApp
-      </div>
+      </a>
     </header>
 
     <div class="tips-overlay">
@@ -361,26 +49,16 @@
         aria-expanded="false"
         aria-controls="tipsPopup"
         aria-label="Calculator tips"
+        title="Calculator tips"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M9 18h6M10 22h4M8 14.5A6 6 0 1 1 16 14c-.8.6-1 1.2-1 2H9c0-.7-.3-1.1-1-1.5Z" />
-          <path d="M12 2v1" />
-        </svg>
+        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
       </button>
       <button
         class="theme-toggle"
         type="button"
         data-theme-toggle
         aria-label="Switch to light theme"
+        title="Switch to light theme"
         aria-pressed="false"
       >
         <svg
@@ -410,7 +88,6 @@
         >
           <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
         </svg>
-        <span class="theme-label">Dark theme</span>
       </button>
       <div
         class="tips-popup"
@@ -435,32 +112,29 @@
       </div>
     </div>
 
+    <nav class="tool-nav" aria-label="Tool navigation">
+      <div class="nav-links">
+        <a href="index.html" aria-label="Home" title="Home">
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+        </a>
+        <a href="ciphertext.html">Cipher Text</a>
+        <a href="numconv.html">Number Converter</a>
+        <a href="numcalc.html" aria-current="page">Number Calculator</a>
+        <a href="encoding-inspector.html">Text Encoding Inspector</a>
+        <a href="hash-verify.html">Hash &amp; Verify</a>
+      </div>
+    </nav>
+
     <main class="center" id="main-content" tabindex="-1">
       <div class="cipher-shell calculator-layout">
-        <div class="page-header">
-          <div>
-            <h1>Number System Calculator</h1>
-            <p class="lead">
-              Evaluate arithmetic expressions written in one number system and
-              output the result in another base.
-            </p>
-          </div>
-          <a class="link-btn" href="index.html">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="m14 5-7 7 7 7M7 12h14" />
-            </svg>
-            Back to Home
-          </a>
-        </div>
+        <section class="workspace-intro" aria-label="Number calculator overview">
+          <div class="workspace-kicker">CipherApp utilities</div>
+          <h1>Number System Calculator</h1>
+          <p>
+            Evaluate arithmetic expressions written in one number system and
+            output the result in another base.
+          </p>
+        </section>
 
         <div class="panel-grid">
           <section class="panel-card">
@@ -560,7 +234,7 @@
             </div>
 
             <div class="controls">
-              <button class="big-btn" id="calcBtn">Calculate</button>
+              <button class="big-btn control-title" id="calcBtn">Calculate</button>
               <button class="link-btn" id="swapBasesBtn">Swap bases</button>
               <button class="link-btn" id="clearBtn">Clear</button>
               <button class="link-btn" id="copyBtn" title="Copy result">
@@ -907,6 +581,16 @@
           const result = evalRpn(rpn, fromBase.value);
           const valueStr = formatValue(result, toBase.value);
           output.innerHTML = formatWithSubscript(valueStr, toBase.value);
+          CipherAppHistory.record({
+            tool: "Number Calculator",
+            action: "Calculate",
+            input: expr,
+            output: valueStr,
+            settings: {
+              fromBase: fromBase.value,
+              toBase: toBase.value,
+            },
+          });
         } catch (err) {
           output.textContent = err?.message || "Invalid expression.";
         }

@@ -6,11 +6,16 @@
     <meta name="theme-color" content="#071219" />
     <title>CipherApp — Home</title>
     <script src="theme.js"></script>
+    <script src="history.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -18,7 +23,7 @@
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
     <header class="topbar">
-      <div class="brand">
+      <a class="brand" href="index.html" aria-label="CipherApp home">
         <svg
           class="brand-mark"
           viewBox="0 0 24 24"
@@ -34,44 +39,59 @@
           <path d="M9.5 12h5M12 9.5v5" />
         </svg>
         CipherApp
-      </div>
-      <button
-        class="theme-toggle"
-        type="button"
-        data-theme-toggle
-        aria-label="Switch to light theme"
-        aria-pressed="false"
-      >
-        <svg
-          class="theme-icon theme-icon-sun"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
-        </svg>
-        <svg
-          class="theme-icon theme-icon-moon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
-        </svg>
-        <span class="theme-label">Dark theme</span>
-      </button>
+      </a>
     </header>
+
+    <nav class="tool-nav" aria-label="Tool navigation">
+      <div class="nav-links">
+        <a href="index.html" aria-current="page" aria-label="Home" title="Home">
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+        </a>
+        <a href="ciphertext.html">Cipher Text</a>
+        <a href="numconv.html">Number Converter</a>
+        <a href="numcalc.html">Number Calculator</a>
+        <a href="encoding-inspector.html">Text Encoding Inspector</a>
+        <a href="hash-verify.html">Hash &amp; Verify</a>
+      </div>
+      <div class="tips-overlay">
+        <button
+          class="theme-toggle"
+          type="button"
+          data-theme-toggle
+          aria-label="Switch to light theme"
+          title="Switch to light theme"
+          aria-pressed="false"
+        >
+          <svg
+            class="theme-icon theme-icon-sun"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+          </svg>
+          <svg
+            class="theme-icon theme-icon-moon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
+          </svg>
+        </button>
+      </div>
+    </nav>
 
     <main class="center" id="main-content" tabindex="-1">
       <h1>CipherApp</h1>
@@ -89,7 +109,7 @@
         </ol>
       </section>
 
-      <nav class="actions-row" id="tools" aria-label="CipherApp tools">
+      <nav class="actions-row" id="tools" aria-label="Available tools">
         <a class="big-btn" href="ciphertext.html">
           <span class="tool-icon">
             <svg
@@ -146,6 +166,25 @@
           </span>
           Number Calculator
           <span class="tool-description">Evaluate expressions across number systems.</span>
+        </a>
+        <a class="big-btn" href="encoding-inspector.html">
+          <span class="tool-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M4 5h16M4 12h16M4 19h16" />
+              <path d="M8 3v4m8-4v4M8 10v4m8-4v4M8 17v4m8-4v4" />
+            </svg>
+          </span>
+          Text Encoding Inspector
+          <span class="tool-description">Inspect Unicode code points and their UTF-8 bytes.</span>
         </a>
         <a class="big-btn" href="hash-verify.html">
           <span class="tool-icon">

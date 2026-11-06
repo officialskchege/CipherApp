@@ -6,11 +6,16 @@
     <meta name="theme-color" content="#071219" />
     <title>CipherApp — Cipher Text</title>
     <script src="theme.js"></script>
+    <script src="history.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
 
     <style>
@@ -533,27 +538,12 @@
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
     <div class="tips-overlay">
-      <a class="home-link" href="index.html" aria-label="Back to home">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="m3 10 9-7 9 7" />
-          <path d="M5 9v11h14V9M9 20v-6h6v6" />
-        </svg>
-        <span>Home</span>
-      </a>
       <button
         class="theme-toggle"
         type="button"
         data-theme-toggle
         aria-label="Switch to light theme"
+        title="Switch to light theme"
         aria-pressed="false"
       >
         <svg
@@ -583,7 +573,6 @@
         >
           <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
         </svg>
-        <span class="theme-label">Dark theme</span>
       </button>
       <button
         class="tips-toggle"
@@ -591,20 +580,9 @@
         aria-expanded="false"
         aria-controls="tipsPopup"
         aria-label="Cipher tips"
+        title="Cipher tips"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M9 18h6M10 22h4M8 14.5A6 6 0 1 1 16 14c-.8.6-1 1.2-1 2H9c0-.7-.3-1.1-1-1.5Z" />
-          <path d="M12 2v1" />
-        </svg>
+        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
       </button>
       <div
         class="tips-popup"
@@ -634,7 +612,7 @@
       </div>
     </div>
     <header class="topbar">
-      <div class="brand">
+      <a class="brand" href="index.html" aria-label="CipherApp home">
         <svg
           class="brand-mark"
           viewBox="0 0 24 24"
@@ -650,8 +628,21 @@
           <path d="M9.5 12h5M12 9.5v5" />
         </svg>
         CipherApp
-      </div>
+      </a>
     </header>
+
+    <nav class="tool-nav" aria-label="Tool navigation">
+      <div class="nav-links">
+        <a href="index.html" aria-label="Home" title="Home">
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+        </a>
+        <a href="ciphertext.html" aria-current="page">Cipher Text</a>
+        <a href="numconv.html">Number Converter</a>
+        <a href="numcalc.html">Number Calculator</a>
+        <a href="encoding-inspector.html">Text Encoding Inspector</a>
+        <a href="hash-verify.html">Hash &amp; Verify</a>
+      </div>
+    </nav>
 
     <main class="center" id="main-content" tabindex="-1">
       <div class="cipher-shell cipher-layout">
@@ -1360,6 +1351,18 @@
             `Processed ${rows.length} messages: ${rows.length - failures} succeeded, ${failures} failed.`;
           batchCopyBtn.disabled = false;
           batchDownloadBtn.disabled = false;
+          if (batchRecords.some((record) => !record.error)) {
+            CipherAppHistory.record({
+              tool: "Cipher Text",
+              action: "Batch transform",
+              input: batchInput.value,
+              output: batchRecords,
+              settings: {
+                from: inputType.value,
+                to: type.value,
+              },
+            });
+          }
         } finally {
           lockedControls.forEach((control, index) => {
             control.disabled = originalDisabledStates[index];
@@ -1380,6 +1383,16 @@
           const sourceValue = inputType.value === "plain" ? value : value.trim();
           const plainText = await decodeByType(sourceValue, inputType.value);
           output.textContent = await encodeByType(plainText, type.value);
+          CipherAppHistory.record({
+            tool: "Cipher Text",
+            action: "Transform",
+            input: value,
+            output: output.textContent,
+            settings: {
+              from: inputType.value,
+              to: type.value,
+            },
+          });
         } catch (error) {
           output.textContent =
             error instanceof Error ? error.message : "Unable to transform this message.";

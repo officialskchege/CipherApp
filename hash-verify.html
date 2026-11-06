@@ -6,11 +6,16 @@
     <meta name="theme-color" content="#071219" />
     <title>CipherApp — Hash &amp; Verify</title>
     <script src="theme.js"></script>
+    <script src="history.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -18,27 +23,12 @@
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="matrix"></div>
     <div class="tips-overlay">
-      <a class="home-link" href="index.html" aria-label="Back to home">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="m3 10 9-7 9 7" />
-          <path d="M5 9v11h14V9M9 20v-6h6v6" />
-        </svg>
-        <span>Home</span>
-      </a>
       <button
         class="theme-toggle"
         type="button"
         data-theme-toggle
         aria-label="Switch to light theme"
+        title="Switch to light theme"
         aria-pressed="false"
       >
         <svg
@@ -68,18 +58,52 @@
         >
           <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
         </svg>
-        <span class="theme-label">Dark theme</span>
       </button>
       <button
         class="link-btn hash-docs-button"
         id="openDocsBtn"
         type="button"
+        aria-label="Hashing and verification tips"
+        title="Hashing and verification tips"
         aria-haspopup="dialog"
         aria-controls="hashDocs"
       >
-        How to use
+        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
       </button>
     </div>
+
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="CipherApp home">
+        <svg
+          class="brand-mark"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M12 3 20 7v5c0 4.5-3.1 7.5-8 9-4.9-1.5-8-4.5-8-9V7l8-4Z" />
+          <path d="M9.5 12h5M12 9.5v5" />
+        </svg>
+        CipherApp
+      </a>
+    </header>
+
+    <nav class="tool-nav" aria-label="Tool navigation">
+      <div class="nav-links">
+        <a href="index.html" aria-label="Home" title="Home">
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+        </a>
+        <a href="ciphertext.html">Cipher Text</a>
+        <a href="numconv.html">Number Converter</a>
+        <a href="numcalc.html">Number Calculator</a>
+        <a href="encoding-inspector.html">Text Encoding Inspector</a>
+        <a href="hash-verify.html" aria-current="page">Hash &amp; Verify</a>
+      </div>
+    </nav>
 
     <main class="center" id="main-content" tabindex="-1">
       <div class="cipher-shell hash-layout">
@@ -92,7 +116,8 @@
           </p>
           <p class="security-note">
             Hashes are one-way checksums, not encryption or password storage.
-            Your input stays in this browser and is not saved by CipherApp.
+            Inputs stay in this browser and are saved only if optional local
+            history is enabled.
           </p>
         </section>
 
@@ -406,6 +431,18 @@
           hashOutput.value = result;
           copyHashBtn.disabled = false;
           hashStatus.textContent = `${algorithm.value} hash generated.`;
+          const file = sourceMode.value === "file" ? fileInput.files[0] : null;
+          CipherAppHistory.record({
+            tool: "Hash & Verify",
+            action: "Generate hash",
+            input: file ? `File: ${file.name}` : textInput.value,
+            output: result,
+            settings: {
+              source: file ? "file" : "text",
+              algorithm: algorithm.value,
+              ...(file ? { fileName: file.name, fileSize: file.size } : {}),
+            },
+          });
         } catch (error) {
           if (operation === hashOperation) hashStatus.textContent = error.message;
         }
@@ -434,6 +471,22 @@
           verifyStatus.textContent = matches
             ? "Match: the input produces the expected hash."
             : "No match: the input does not produce the expected hash.";
+          const file = sourceMode.value === "file" ? fileInput.files[0] : null;
+          CipherAppHistory.record({
+            tool: "Hash & Verify",
+            action: "Verify hash",
+            input: file ? `File: ${file.name}` : textInput.value,
+            output: {
+              actual,
+              expected: expectedHash.value.trim(),
+              matches,
+            },
+            settings: {
+              source: file ? "file" : "text",
+              algorithm: algorithm.value,
+              ...(file ? { fileName: file.name, fileSize: file.size } : {}),
+            },
+          });
         } catch (error) {
           if (operation === hashOperation) verifyStatus.textContent = error.message;
         }
@@ -538,6 +591,13 @@
           downloadBatchBtn.disabled = false;
           batchStatus.textContent =
             `${results.length} line(s) hashed with ${selectedAlgorithm}.`;
+          CipherAppHistory.record({
+            tool: "Hash & Verify",
+            action: "Batch hash",
+            input: batchInput.value,
+            output: results,
+            settings: { algorithm: selectedAlgorithm },
+          });
         } catch (error) {
           if (operation === batchOperation) batchStatus.textContent = error.message;
         }

@@ -14,16 +14,24 @@ modern browser to get started; no build step or server is required.
   or use the separate Base64 Text tool for UTF-8 text.
 - `numcalc.html` — evaluate expressions in one base and display the result in
   another.
+- `encoding-inspector.html` — inspect Unicode code points and their UTF-8 byte
+  sequences locally in your browser.
 - `hash-verify.html` — generate SHA-256, SHA-384, or SHA-512 hashes for text
   and files, verify an expected digest, or hash up to 100 text lines in a batch.
 
-  Use the theme toggle on any page to switch between the default dark theme and
-  the light theme. The preference is saved in browser storage.
+Use the theme toggle on any page to switch between the default dark theme and
+the light theme. The preference is saved in browser storage.
 
-  The Cipher Text and Number Converter workspaces support batch processing of up
+The Cipher Text and Number Converter workspaces support batch processing of up
 to 100 non-empty lines per run. Each line is transformed independently, errors
 are reported per line, and results can be copied or downloaded as JSON. Batch
-data is kept in page memory and is not saved by CipherApp.
+data stays in page memory unless optional local history is enabled.
+
+Local history is off by default. Enable it from the **Local history** button on
+any page to save up to 50 successful tool runs in this browser, including their
+inputs and results. History is not encrypted or synced. Cipher keys,
+passphrases, and file contents are never saved. Turning history off stops new
+entries but does not erase existing ones; clear entries from the history panel.
 
 All tools run in the browser. Classical ciphers are intended for learning, not
 for securing sensitive messages. AES passphrases are not stored; keep the full

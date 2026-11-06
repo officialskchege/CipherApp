@@ -108,6 +108,116 @@ a:hover {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-decoration: none;
+}
+
+.tool-nav {
+  position: sticky;
+  z-index: 11;
+  top: 64px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: min(100% - clamp(24px, 5vw, 72px), 1280px);
+  margin: 14px auto 0;
+  padding: 6px;
+  overflow: visible;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(8, 22, 29, 0.66);
+  backdrop-filter: blur(14px);
+}
+
+.nav-links {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-color: var(--muted) transparent;
+  scrollbar-width: thin;
+}
+
+html[data-theme="light"] .tool-nav {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.tool-nav a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 13px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.25;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tool-nav a:hover {
+  border-color: var(--border);
+  background: rgba(115, 243, 208, 0.08);
+  color: var(--text);
+}
+
+.tool-nav a[aria-current="page"] {
+  border-color: var(--border);
+  background: rgba(115, 243, 208, 0.13);
+  color: var(--neon);
+}
+
+.nav-links a[aria-label="Home"] {
+  min-width: 40px;
+  justify-content: center;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.tool-nav .tips-overlay {
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 12;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.tool-nav .theme-toggle,
+.tool-nav .tips-toggle,
+.tool-nav .history-open,
+.tool-nav .hash-docs-button {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  margin: 0;
+  padding: 0;
+  border-radius: 10px;
+}
+
+.tool-nav .theme-toggle {
+  gap: 0;
+}
+
+.tool-nav .tips-toggle {
+  font-size: 15px;
+}
+
+.tool-nav .tips-popup {
+  z-index: 20;
+}
+
+.tool-nav .history-open {
+  pointer-events: auto;
 }
 
 .brand-mark {
@@ -179,7 +289,7 @@ h3 {
 
 .actions-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   gap: 14px;
   margin: 0;
 }
@@ -793,6 +903,10 @@ textarea:focus-visible,
     grid-template-columns: 1fr;
   }
 
+  .encoding-summary {
+    grid-template-columns: 1fr;
+  }
+
   .controls {
     grid-template-columns: 1fr;
   }
@@ -1171,6 +1285,145 @@ body.tool-page .hash-layout .hash-output {
   backdrop-filter: blur(4px);
 }
 
+.history-open {
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+body:not(.tool-page) .topbar .history-open {
+  margin-left: 10px;
+}
+
+.history-dialog {
+  width: min(760px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(84vh, 780px);
+  margin: auto;
+  padding: clamp(18px, 4vw, 30px);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+}
+
+.history-dialog::backdrop {
+  background: rgba(1, 8, 12, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.history-dialog-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.history-dialog-header h2 {
+  margin: 4px 0 0;
+  color: var(--text);
+}
+
+.history-disclosure,
+.history-state,
+.history-empty,
+.history-dialog-status {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.history-disclosure {
+  margin: 16px 0;
+}
+
+.history-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  color: var(--neon);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.history-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--neon);
+}
+
+.history-state {
+  margin: 8px 0;
+}
+
+.history-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px 0;
+}
+
+.history-entry {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(4, 14, 20, 0.3);
+}
+
+.history-entry summary {
+  padding: 12px 14px;
+  color: var(--neon);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.history-entry-content {
+  display: grid;
+  gap: 6px;
+  padding: 0 14px 12px;
+}
+
+.history-entry-content strong {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.history-entry-content pre {
+  max-height: 220px;
+  margin: 0 0 8px;
+  overflow: auto;
+  color: var(--text);
+  font: 13px/1.6 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.history-entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 14px 12px;
+}
+
+.history-error {
+  color: #ffaaaa;
+  font-size: 13px;
+}
+
+.history-toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 20;
+  max-width: min(520px, calc(100vw - 36px));
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 142, 142, 0.55);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+}
+
 .hash-docs-header {
   display: flex;
   align-items: start;
@@ -1221,6 +1474,104 @@ body.tool-page .hash-layout .hash-output {
 body.tool-page .cipher-layout,
 body.tool-page .converter-layout {
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+}
+
+body.tool-page .encoding-layout .workspace-intro,
+body.tool-page .encoding-layout .encoding-input-panel,
+body.tool-page .encoding-layout .encoding-output-panel {
+  grid-column: 1 / -1;
+}
+
+body.tool-page .encoding-layout .field-group textarea {
+  min-height: 180px;
+}
+
+body.tool-page .encoding-layout button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.encoding-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.encoding-stat {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(4, 14, 20, 0.38);
+}
+
+.encoding-stat span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.encoding-stat strong {
+  color: var(--text);
+  font: 600 20px/1.3 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+.encoding-byte-output {
+  min-height: 72px;
+  padding: 14px;
+  font: 13px/1.8 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+.encoding-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.encoding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 13px/1.5 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-align: left;
+}
+
+.encoding-table th,
+.encoding-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.encoding-table th {
+  color: var(--neon);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.encoding-table td {
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.encoding-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.encoding-table .encoding-character {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+}
+
+.encoding-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 body.tool-page .workspace-intro {
@@ -1383,21 +1734,27 @@ body.tool-page .tips-popup {
   grid-column: 1 / -1;
 }
 
-.calculator-layout .page-header {
-  align-items: center;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.calculator-layout .page-header h1 {
-  margin: 0;
-  color: var(--text);
-  font-size: clamp(32px, 4.5vw, 52px);
-}
-
 .calculator-layout .panel-grid {
+  display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
   gap: 20px;
+  align-items: start;
+}
+
+.calculator-layout .panel-grid > .panel-card {
+  padding: clamp(18px, 2.4vw, 28px);
+}
+
+.calculator-layout .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.calculator-layout .panel-grid > .panel-card:first-child > .field-group:first-child,
+.calculator-layout .panel-grid > .panel-card.right > .field-group:first-child {
+  margin-top: 0;
 }
 
 .calculator-layout .panel-grid .panel-card.right {
@@ -1406,6 +1763,20 @@ body.tool-page .tips-popup {
 
 .calculator-layout .field-group textarea {
   min-height: 240px;
+}
+
+.calculator-layout .controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.calculator-layout .hint-list {
+  margin: 14px 0 0;
+  padding-left: 22px;
+  color: var(--muted);
+  line-height: 1.8;
 }
 
 @media (max-width: 900px) {
@@ -1439,6 +1810,11 @@ body.tool-page .tips-popup {
     width: calc(100% - 32px);
   }
 
+  .tool-nav {
+    width: calc(100% - 32px);
+    margin-top: 10px;
+  }
+
   .topbar .brand {
     font-size: 13px;
   }
@@ -1453,6 +1829,38 @@ body.tool-page .tips-popup {
     width: calc(100% - 32px);
     min-height: 40px;
     padding-top: 12px;
+  }
+
+  .tool-nav {
+    width: calc(100% - 24px);
+    margin-top: 8px;
+    padding: 4px;
+  }
+
+  .nav-links {
+    gap: 4px;
+  }
+
+  .tool-nav a {
+    min-height: 38px;
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+
+  .tool-nav .tips-overlay {
+    top: auto;
+    right: auto;
+    gap: 4px;
+  }
+
+  .tool-nav .theme-toggle,
+  .tool-nav .tips-toggle,
+  .tool-nav .history-open,
+  .tool-nav .hash-docs-button {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
   }
 
   body.tool-page .topbar .brand {
@@ -1477,14 +1885,18 @@ body.tool-page .tips-popup {
 
   body.tool-page .tips-overlay {
     top: 10px;
-    right: 12px;
-    gap: 6px;
+    right: 8px;
+    gap: 4px;
   }
 
   body.tool-page .home-link,
   body.tool-page .tips-toggle,
   body.tool-page .tips-overlay .theme-toggle {
     min-height: 42px;
+  }
+
+  body.tool-page .tips-overlay .home-link {
+    padding: 8px;
   }
 
   body.tool-page .tips-toggle {
@@ -1494,7 +1906,14 @@ body.tool-page .tips-popup {
 
   body.tool-page .tips-overlay .theme-toggle {
     min-width: 0;
-    padding: 8px 10px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  body.tool-page .tips-overlay .history-open {
+    min-width: 0;
+    min-height: 42px;
+    padding: 8px;
     font-size: 12px;
   }
 
@@ -1516,9 +1935,10 @@ body.tool-page .tips-popup {
     padding: 12px 16px;
   }
 
-  .calculator-layout .page-header {
-    align-items: start;
+  .encoding-summary {
+    grid-template-columns: 1fr;
   }
+
 }
 
 html[data-theme="light"] body.tool-page .cipher-shell,
@@ -1534,10 +1954,6 @@ html[data-theme="light"] body.tool-page .panel-card {
 
 html[data-theme="light"] body.tool-page .workspace-intro h1,
 html[data-theme="light"] body.tool-page .panel-heading h2,
-html[data-theme="light"] .calculator-layout .page-header h1 {
-  color: var(--text);
-}
-
 html[data-theme="light"] body.tool-page .hash-verification-result[data-state="match"] {
   color: #176f58;
 }
@@ -1579,6 +1995,40 @@ html[data-theme="light"] body.tool-page .tips-popup {
   color: var(--text);
 }
 
+@media (max-width: 560px) {
+  body.tool-page .tool-nav .tips-overlay {
+    top: auto;
+    right: auto;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tool-nav {
+    gap: 4px;
+  }
+
+  .tool-nav .nav-links {
+    gap: 2px;
+  }
+}
+
+html[data-theme="light"] .history-dialog,
+html[data-theme="light"] .history-toast {
+  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.98);
+  color: var(--text);
+  box-shadow: 0 18px 44px rgba(32, 69, 74, 0.16);
+}
+
+html[data-theme="light"] .history-entry {
+  background: rgba(234, 246, 242, 0.6);
+}
+
+html[data-theme="light"] .history-entry-content pre {
+  color: var(--text);
+}
+
 @media (max-width: 760px) {
   body.tool-page .hash-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -1592,4 +2042,9 @@ html[data-theme="light"] body.tool-page .tips-popup {
   body.tool-page .topbar {
     width: calc(100% - 32px);
   }
+}
+
+body.tool-page .tool-nav .tips-overlay {
+  top: auto;
+  right: auto;
 }

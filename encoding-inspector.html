@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071219" />
+    <title>CipherApp — Text Encoding Inspector</title>
+    <script src="theme.js"></script>
+    <script src="history.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="tool-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="matrix"></div>
+    <div class="tips-overlay">
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Switch to light theme"
+        title="Switch to light theme"
+        aria-pressed="false"
+      >
+        <svg
+          class="theme-icon theme-icon-sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+        </svg>
+        <svg
+          class="theme-icon theme-icon-moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.6 8.6 0 1 0 12 12Z" />
+        </svg>
+      </button>
+    </div>
+
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="CipherApp home">
+        <svg
+          class="brand-mark"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M12 3 20 7v5c0 4.5-3.1 7.5-8 9-4.9-1.5-8-4.5-8-9V7l8-4Z" />
+          <path d="M9.5 12h5M12 9.5v5" />
+        </svg>
+        CipherApp
+      </a>
+    </header>
+
+    <nav class="tool-nav" aria-label="Tool navigation">
+      <div class="nav-links">
+        <a href="index.html" aria-label="Home" title="Home">
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+        </a>
+        <a href="ciphertext.html">Cipher Text</a>
+        <a href="numconv.html">Number Converter</a>
+        <a href="numcalc.html">Number Calculator</a>
+        <a href="encoding-inspector.html" aria-current="page">Text Encoding Inspector</a>
+        <a href="hash-verify.html">Hash &amp; Verify</a>
+      </div>
+    </nav>
+
+    <main class="center" id="main-content" tabindex="-1">
+      <div class="cipher-shell encoding-layout">
+        <section class="workspace-intro" aria-label="Text encoding inspector overview">
+          <div class="workspace-kicker">CipherApp utilities</div>
+          <h1>Text Encoding Inspector</h1>
+          <p>
+            See how text is represented as Unicode code points and UTF-8 bytes.
+            Analysis stays in this browser and is saved only if optional local
+            history is enabled.
+          </p>
+        </section>
+
+        <section class="wire-panel encoding-input-panel" aria-label="Text input">
+          <div class="field-group">
+            <label for="textInput">Text to inspect</label>
+            <textarea
+              id="textInput"
+              name="textInput"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Type or paste text here…"
+            ></textarea>
+          </div>
+          <div class="controls">
+            <button class="link-btn" id="clearBtn" type="button">Clear</button>
+          </div>
+        </section>
+
+        <section class="wire-panel encoding-output-panel" aria-label="Encoding details">
+          <div class="panel-heading">
+            <div>
+              <h2>UTF-8 breakdown</h2>
+              <p>
+                Character count is measured in Unicode code points; combined
+                emoji and accents may contain multiple code points.
+              </p>
+            </div>
+          </div>
+
+          <div class="encoding-summary" aria-label="Text summary">
+            <div class="encoding-stat">
+              <span>Code points</span>
+              <strong id="codePointCount">0</strong>
+            </div>
+            <div class="encoding-stat">
+              <span>UTF-16 code units</span>
+              <strong id="codeUnitCount">0</strong>
+            </div>
+            <div class="encoding-stat">
+              <span>UTF-8 bytes</span>
+              <strong id="byteCount">0</strong>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <span class="output-label" id="byteOutputLabel">UTF-8 bytes (hexadecimal)</span>
+            <div
+              class="output-area encoding-byte-output"
+              id="byteOutput"
+              aria-labelledby="byteOutputLabel"
+              aria-live="polite"
+            >No bytes to inspect.</div>
+          </div>
+          <div class="controls">
+            <button class="link-btn" id="copyBtn" type="button" disabled>
+              Copy hex bytes
+            </button>
+          </div>
+
+          <div class="field-group">
+            <span class="output-label" id="tableLabel">Per-code-point details</span>
+            <div class="encoding-table-wrap">
+              <table class="encoding-table" aria-labelledby="tableLabel">
+                <thead>
+                  <tr>
+                    <th scope="col">Index</th>
+                    <th scope="col">Character</th>
+                    <th scope="col">Code point</th>
+                    <th scope="col">UTF-8 bytes</th>
+                    <th scope="col">Byte offset (0-based)</th>
+                  </tr>
+                </thead>
+                <tbody id="codePointRows">
+                  <tr><td colspan="5">Enter text to inspect its encoding.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p class="encoding-note" id="status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">CipherApp · Experiment responsibly</footer>
+
+    <script>
+      const textInput = document.getElementById("textInput");
+      const codePointCount = document.getElementById("codePointCount");
+      const codeUnitCount = document.getElementById("codeUnitCount");
+      const byteCount = document.getElementById("byteCount");
+      const byteOutput = document.getElementById("byteOutput");
+      const codePointRows = document.getElementById("codePointRows");
+      const copyBtn = document.getElementById("copyBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const status = document.getElementById("status");
+      const encoder = new TextEncoder();
+      let hexBytes = "";
+
+      function toHex(bytes) {
+        return Array.from(bytes, (byte) =>
+          byte.toString(16).padStart(2, "0").toUpperCase(),
+        ).join(" ");
+      }
+
+      function characterDescription(character, codePoint, isUnpairedSurrogate) {
+        if (isUnpairedSurrogate) {
+          return codePoint >= 0xdc00
+            ? "Unpaired low surrogate"
+            : "Unpaired high surrogate";
+        }
+        if (codePoint === 0x20) return "SPACE";
+        if (codePoint === 0x09) return "TAB";
+        if (codePoint === 0x0a) return "LF";
+        if (codePoint === 0x0d) return "CR";
+        if (codePoint < 0x20 || (codePoint >= 0x7f && codePoint <= 0x9f)) {
+          return "Control character";
+        }
+        return character;
+      }
+
+      function appendCell(row, value, className) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        if (className) cell.className = className;
+        row.append(cell);
+      }
+
+      function inspectText() {
+        const text = textInput.value;
+        const characters = Array.from(text);
+        const bytes = encoder.encode(text);
+        hexBytes = toHex(bytes);
+        codePointCount.textContent = String(characters.length);
+        codeUnitCount.textContent = String(text.length);
+        byteCount.textContent = String(bytes.length);
+        byteOutput.textContent = hexBytes || "No bytes to inspect.";
+        copyBtn.disabled = bytes.length === 0;
+        status.textContent = "";
+        codePointRows.replaceChildren();
+
+        if (characters.length === 0) {
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.colSpan = 5;
+          cell.textContent = "Enter text to inspect its encoding.";
+          row.append(cell);
+          codePointRows.append(row);
+          return;
+        }
+
+        let byteOffset = 0;
+        characters.forEach((character, index) => {
+          const point = character.codePointAt(0);
+          const isUnpairedSurrogate = point >= 0xd800 && point <= 0xdfff;
+          const characterBytes = encoder.encode(character);
+          const row = document.createElement("tr");
+          const codePointLabel = isUnpairedSurrogate
+            ? "U+FFFD*"
+            : `U+${point.toString(16).toUpperCase().padStart(4, "0")}`;
+          const byteEnd = byteOffset + characterBytes.length - 1;
+
+          appendCell(row, String(index + 1));
+          appendCell(
+            row,
+            characterDescription(character, point, isUnpairedSurrogate),
+            "encoding-character",
+          );
+          appendCell(row, codePointLabel);
+          appendCell(row, toHex(characterBytes));
+          appendCell(
+            row,
+            characterBytes.length === 0
+              ? "-"
+              : byteEnd === byteOffset
+                ? String(byteOffset)
+                : `${byteOffset}-${byteEnd}`,
+          );
+          codePointRows.append(row);
+          byteOffset += characterBytes.length;
+        });
+
+        if (characters.some((character) => {
+          const point = character.codePointAt(0);
+          return point >= 0xd800 && point <= 0xdfff;
+        })) {
+          status.textContent =
+            "* An unpaired UTF-16 surrogate is encoded as the replacement character U+FFFD.";
+        }
+      }
+
+      textInput.addEventListener("input", inspectText);
+      textInput.addEventListener("blur", () => {
+        if (!textInput.value) return;
+        CipherAppHistory.record({
+          tool: "Text Encoding Inspector",
+          action: "Inspect UTF-8",
+          input: textInput.value,
+          output: hexBytes,
+          settings: {
+            codePoints: codePointCount.textContent,
+            codeUnits: codeUnitCount.textContent,
+            bytes: byteCount.textContent,
+          },
+        });
+      });
+      clearBtn.addEventListener("click", () => {
+        textInput.value = "";
+        inspectText();
+        textInput.focus();
+      });
+      copyBtn.addEventListener("click", async () => {
+        if (!hexBytes) return;
+        try {
+          await navigator.clipboard.writeText(hexBytes);
+          status.textContent = "UTF-8 hexadecimal bytes copied.";
+        } catch (error) {
+          status.textContent = `Could not copy bytes: ${error.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>

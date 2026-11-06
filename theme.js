@@ -20,6 +20,7 @@ function applyTheme(theme) {
       "aria-label",
       `Switch to ${isLight ? "dark" : "light"} theme`,
     );
+    button.title = `Switch to ${isLight ? "dark" : "light"} theme`;
     const label = button.querySelector(".theme-label");
     if (label) label.textContent = isLight ? "Light theme" : "Dark theme";
   });
