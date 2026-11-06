@@ -102,12 +102,12 @@ a:hover {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: var(--neon);
-  font-size: 15px;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  font-size: 23px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: -0.045em;
   text-decoration: none;
 }
 
@@ -221,8 +221,8 @@ html[data-theme="light"] .tool-nav {
 }
 
 .brand-mark {
-  width: 25px;
-  height: 25px;
+  width: 34px;
+  height: 34px;
   flex: 0 0 auto;
 }
 
@@ -1816,7 +1816,13 @@ body.tool-page .tips-popup {
   }
 
   .topbar .brand {
-    font-size: 13px;
+    gap: 9px;
+    font-size: 19px;
+  }
+
+  .brand-mark {
+    width: 29px;
+    height: 29px;
   }
 
   .theme-toggle {

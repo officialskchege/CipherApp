@@ -4,13 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#071219" />
-    <title>CipherApp — Cipher Text</title>
+    <title>CipherLab — Cipher Text</title>
     <script src="theme.js"></script>
     <script src="history.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -601,7 +601,7 @@
           <li>Rail Fence uses zig-zag rows; the depth controls the rails.</li>
           <li>XOR works on bytes; keep the key short but not empty.</li>
           <li>
-            AES uses a random salt and IV. Keep the full CipherApp AES v1 output
+            AES uses a random salt and IV. Keep the full AES v1 output
             with your passphrase.
           </li>
           <li>
@@ -612,7 +612,7 @@
       </div>
     </div>
     <header class="topbar">
-      <a class="brand" href="index.html" aria-label="CipherApp home">
+      <a class="brand" href="index.html" aria-label="CipherLab home">
         <svg
           class="brand-mark"
           viewBox="0 0 24 24"
@@ -627,7 +627,7 @@
           <path d="M12 3 20 7v5c0 4.5-3.1 7.5-8 9-4.9-1.5-8-4.5-8-9V7l8-4Z" />
           <path d="M9.5 12h5M12 9.5v5" />
         </svg>
-        CipherApp
+        CipherLab
       </a>
     </header>
 
@@ -647,7 +647,7 @@
     <main class="center" id="main-content" tabindex="-1">
       <div class="cipher-shell cipher-layout">
         <section class="workspace-intro" aria-label="Cipher text overview">
-          <div class="workspace-kicker">CipherApp text lab</div>
+          <div class="workspace-kicker">CipherLab text lab</div>
           <h1>Cipher Text</h1>
           <p>
             Convert messages between classic encodings and ciphers. Choose your
@@ -667,7 +667,7 @@
               <h2>Message</h2>
               <p>
                 Paste plain text or encoded text here. The selected mode decides
-                how CipherApp reads it.
+                how CipherLab reads it.
               </p>
             </div>
           </div>
@@ -860,7 +860,7 @@
       </div>
     </main>
 
-    <footer class="footer">CipherApp · Experiment responsibly</footer>
+    <footer class="footer">CipherLab · Experiment responsibly</footer>
 
     <script>
       const input = document.getElementById("cipherInput");

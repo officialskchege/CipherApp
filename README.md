@@ -1,4 +1,4 @@
-# CipherApp
+# CipherLab
 
 A static, browser-based workspace for experimenting with text ciphers, number
 base conversions, and arithmetic across numeral systems. Open `index.html` in a
